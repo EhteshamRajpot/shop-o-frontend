@@ -14,7 +14,7 @@ interface SellerState {
 }
 
 const initialState: SellerState = {
-  isSeller: false,
+  isLoading: true,
 };
 
 export const sellerReducer = createReducer(initialState, (builder) => {

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from 'react';
 import "./App.css";
 import {
   Navigate,
@@ -19,31 +20,26 @@ import {
   BestSellingPage,
   ProductDetailsPage,
   SellerActivationPage,
-} from "./Routes.tsx";
+} from "./routes/Routes";
 
-import { ShopHomePage } from "./ShopRoutes.tsx";
+import {
+  ShopHomePage,
+  ShopDashboardPage
+
+} from "./routes/ShopRoutes";
 
 import { ToastContainer } from "react-toastify";
 import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
-import ProtectedRoutes from "./ProtectedRoutes.tsx";
-import SellerProtectedRoutes from "./SellerProtectedRoutes.tsx";
-import { useSelector } from "react-redux";
+import ProtectedRoutes from "./protectedRoutes/ProtectedRoutes";
+import SellerProtectedRoutes from "./protectedRoutes/SellerProtectedRoutes";
 
 function App() {
-  const { isAuthenticated, success } = useSelector((state) => state.user)
-  const { isSeller, seller } = useSelector((state) => state.seller)
 
-  React.useEffect(() => {
+  useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
-
-    if (isSeller) {
-      Navigate(`/shop/${seller._id}`)
-    }
   }, [])
-
-  console.log(isSeller, seller)
 
   const router = createBrowserRouter([
     {
@@ -53,7 +49,7 @@ function App() {
     {
       path: "/login",
       element:
-        <ProtectedRoutes isAuthenticated={[isAuthenticated, success]}>
+        <ProtectedRoutes>
           <LoginPage />
         </ProtectedRoutes>,
     },
@@ -92,7 +88,7 @@ function App() {
     {
       path: "/profile",
       element:
-        <ProtectedRoutes isAuthenticated={isAuthenticated}>
+        <ProtectedRoutes>
           <ProfilePage />
         </ProtectedRoutes>,
     },
@@ -108,10 +104,16 @@ function App() {
     {
       path: "/shop/:id",
       element:
-        <SellerProtectedRoutes isSeller={isSeller} seller={seller}>
+        <SellerProtectedRoutes>
           <ShopHomePage />
         </SellerProtectedRoutes>
-      ,
+    },
+    {
+      path: "/dashboard",
+      element:
+        <SellerProtectedRoutes>
+          <ShopDashboardPage />
+        </SellerProtectedRoutes>
     },
 
   ]);
