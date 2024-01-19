@@ -1,10 +1,12 @@
 import React from 'react';
 import CreateProduct from "../../components/Shop/CreateProduct.tsx";
-import DashboardHeader from '../../components/Shop/Layout/DashboardHeader';
-import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar';
-
+import DashboardHeader from '../../components/Shop/Layout/DashboardHeader.tsx';
+import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar.tsx';
+import { useDispatch } from 'react-redux';
+import { createProduct } from '../../redux/actions/product.tsx';
 
 const ShopCreateProduct = () => {
+    const dispatch = useDispatch()
     return (
         <div>
             <DashboardHeader />
@@ -13,7 +15,7 @@ const ShopCreateProduct = () => {
                     <DashboardSideBar active={4} />
                 </div>
                 <div className="w-full justify-center flex">
-                    <CreateProduct />
+                    <CreateProduct dispatch={dispatch} createProduct={createProduct}/>
                 </div>
             </div>
         </div>

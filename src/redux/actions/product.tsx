@@ -1,8 +1,9 @@
 import axios from "axios";
 import { server } from "../../server";
+import { Dispatch } from "redux";
 
 // create product
-export const createProduct = (newForm: any) => async (dispatch: any) => {
+export const createProduct = (newForm: any) => async (dispatch: Dispatch ) => {
     try {
         dispatch({
             type: "productCreateRequest",

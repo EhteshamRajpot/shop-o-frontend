@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from 'react'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { categoriesData } from '../../static/data';
-import { createProduct } from '../../redux/actions/product';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -11,11 +10,10 @@ interface CreateProductProps {
     createProduct: any
 }
 
-const CreateProduct: React.FC<CreateProductProps> = () => {
+const CreateProduct: React.FC<CreateProductProps> = ({dispatch, createProduct}) => {
     const { seller } = useSelector((state: any) => state.seller)
     const { success, error } = useSelector((state: any) => state.product)
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const [images, setImages] = useState<File[]>([]);
     const [name, setName] = useState<string>("");
