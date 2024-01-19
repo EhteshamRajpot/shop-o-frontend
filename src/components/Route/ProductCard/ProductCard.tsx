@@ -4,9 +4,10 @@ import styles from '../../../styles/styles';
 import { AiFillHeart, AiFillStar, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineStar } from 'react-icons/ai';
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard.tsx";
 interface ProductCardProps {
-    data: any
+    data: any,
+    isShop: any
 };
-const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ data, isShop }) => {
     const [click, setClick] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -85,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
                     />
                     {
                         open ? (
-                            <ProductDetailsCard setOpen={setOpen} data={data}/>
+                            <ProductDetailsCard setOpen={setOpen} data={data} />
                         ) : null
                     }
                 </div>

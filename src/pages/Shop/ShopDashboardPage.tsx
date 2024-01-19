@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardHeader from "../../components/Shop/Layout/DashboarHeader.tsx";
+import DashboardHeader from "../../components/Shop/Layout/DashboardHeader.tsx";
 import DashboardSideBar from "../../components/Shop/Layout/DashboardSideBar.tsx";
 import DashboardHero from "../../components/Shop/DashboardHero.tsx";
 

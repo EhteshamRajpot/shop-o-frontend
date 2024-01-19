@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Layout/Header.tsx';
 import ProfileSideBar from "../components/Profile/ProfileSidebar.tsx";
 import ProfileContent from "../components/Profile/ProfileContent.tsx";
 import { useSelector } from 'react-redux';
 import styles from '../styles/styles.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-    const { loading } = useSelector((state: any) => state.user);
+    const navigate = useNavigate();
+    const { loading, isAuthenticated } = useSelector((state: any) => state.user);
     const [active, setActive] = useState(1);
+
+    useEffect(() => {
+        if (isAuthenticated === false) {
+            navigate("/login")
+        }
+    }, [isAuthenticated])
 
     return (
         <div>

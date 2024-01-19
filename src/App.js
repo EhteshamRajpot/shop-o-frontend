@@ -2,7 +2,6 @@ import * as React from "react";
 import { useEffect } from 'react';
 import "./App.css";
 import {
-  Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
@@ -24,7 +23,8 @@ import {
 
 import {
   ShopHomePage,
-  ShopDashboardPage
+  ShopCreateProduct,
+  ShopDashboardPage, 
 
 } from "./routes/ShopRoutes";
 
@@ -113,6 +113,13 @@ function App() {
       element:
         <SellerProtectedRoutes>
           <ShopDashboardPage />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/dashboard-create-product",
+      element:
+        <SellerProtectedRoutes>
+          <ShopCreateProduct />
         </SellerProtectedRoutes>
     },
 

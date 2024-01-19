@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import ProductCard from '../Route/ProductCard/ProductCard';
-import * as products from "../../static/data.tsx";
+import { productData } from "../../static/data.tsx";
 import styles from '../../styles/styles.tsx';
 
 interface ShopProfileDataProps {
@@ -59,8 +59,11 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner }) => {
                         products.map((i:any, index:any) => (
                             <ProductCard data={i} key={index} />
                         ))} */}
-
-                    Products Data
+                    {
+                        productData && productData.map((i: any, index: any) => (
+                            <ProductCard data={i} key={index} isShop={true} />
+                        ))
+                    }
                 </div>
             )}
 

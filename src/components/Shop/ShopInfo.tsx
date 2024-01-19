@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import styles from '../../styles/styles'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Loader from '../Layout/Loader.tsx';
 import axios from 'axios';
 import { backend_url, server } from '../../server.tsx';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 interface ShopInfoProps {
     isOwner: boolean
@@ -13,12 +14,18 @@ const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner }) => {
     const { seller } = useSelector((state: any) => state.seller)
     const { user } = useSelector((state: any) => state.user)
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const logoutHandler = async () => {
         axios.get(`${server}/shop/logout`, {
             withCredentials: true,
+        }).then((res) => {
+            toast.success(res.data.message)
+            navigate("/shop-login")
+            window.location.reload();
+        }).catch((error) => {
+            console.log(error?.response?.data?.message)
         });
-        window.location.reload();
     };
     return (
         <>
@@ -30,7 +37,7 @@ const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner }) => {
                         <div className="w-full py-5">
                             <div className="w-full flex item-center justify-center">
                                 <img
-                                    src={`${backend_url}${user?.avatar}`}
+                                    src={`${backend_url}${seller?.avatar}`}
                                     alt=""
                                     className="w-[150px] h-[150px] object-cover rounded-full"
                                 />
