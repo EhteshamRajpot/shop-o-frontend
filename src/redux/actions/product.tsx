@@ -3,7 +3,7 @@ import { server } from "../../server";
 import { Dispatch } from "redux";
 
 // create product
-export const createProduct = (newForm: any) => async (dispatch: Dispatch ) => {
+export const createProduct = (newForm: any) => async (dispatch: Dispatch) => {
     try {
         dispatch({
             type: "productCreateRequest",
@@ -25,3 +25,25 @@ export const createProduct = (newForm: any) => async (dispatch: Dispatch ) => {
         });
     }
 };
+
+// get all Products
+export const getAllProductsShop = (id: any) => async (dispatch: any) => {
+    try {
+        dispatch({
+            type: "getAllProductsShopRequest",
+        });
+
+        const { data } = await axios.get(`${server}/product/get-all-products-shop/${id}`)
+
+        dispatch({
+            type: "getAllProductsShopSuccess",
+            payload: data?.products
+        })
+    } catch (error: any) {
+        dispatch({
+            type: "getAllProductsShopFailed",
+            payload: error?.response?.data?.message,
+        })
+    }
+
+}
