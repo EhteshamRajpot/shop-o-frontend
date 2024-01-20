@@ -45,5 +45,24 @@ export const getAllProductsShop = (id: any) => async (dispatch: any) => {
             payload: error?.response?.data?.message,
         })
     }
+}
 
+// delete product of shop
+export const deleteProduct = (id: any) => async (dispatch: any) => {
+    try {
+        dispatch({
+            type: "deleteProductRequest"
+        })
+        const { data } = await axios.delete(`${server}/product/delete-shop-product/${id}`, { withCredentials: true })
+
+        dispatch({
+            type: "deleteProductSuccess",
+            payload: data?.message
+        })
+    } catch (error: any) {
+        dispatch({
+            type: "deleteProductFailed",
+            payload: error?.message?.data?.message
+        })
+    }
 }

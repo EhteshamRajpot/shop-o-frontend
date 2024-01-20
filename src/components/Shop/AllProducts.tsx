@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Loader from '../Layout/Loader';
 import { DataGrid } from '@mui/x-data-grid';
+import { deleteProduct } from '../../redux/actions/product';
 
 interface AllProductsProps {
   dispatch: any,
@@ -19,7 +20,10 @@ const AllProducts: React.FC<AllProductsProps> = ({ dispatch, getAllProductsShop 
     dispatch(getAllProductsShop(seller._id))
   }, [dispatch]);
 
-  const handleDelete = () => {}
+  const handleDelete = (id: any) => {
+    dispatch(deleteProduct(id))
+    window.location.reload()
+  }
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -57,7 +61,7 @@ const AllProducts: React.FC<AllProductsProps> = ({ dispatch, getAllProductsShop 
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params:any) => {
+      renderCell: (params: any) => {
         return (
           <>
             <Link to={`/product/${params.id}`}>
@@ -76,12 +80,12 @@ const AllProducts: React.FC<AllProductsProps> = ({ dispatch, getAllProductsShop 
       headerName: "",
       type: "number",
       sortable: false,
-      renderCell: (params:any) => {
+      renderCell: (params: any) => {
         return (
           <>
             <Button
-            //  onClick={() => handleDelete(params.id)}
-             >
+              onClick={() => handleDelete(params.id)}
+            >
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -90,10 +94,10 @@ const AllProducts: React.FC<AllProductsProps> = ({ dispatch, getAllProductsShop 
     },
   ];
 
-  const row:any[] = [];
+  const row: any[] = [];
 
   products &&
-    products.forEach((item:any) => {
+    products.forEach((item: any) => {
       row.push({
         id: item._id,
         name: item.name,

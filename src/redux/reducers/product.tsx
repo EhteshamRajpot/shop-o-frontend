@@ -3,10 +3,13 @@ import { createReducer, createAction } from "@reduxjs/toolkit";
 // Define Actions
 const productCreateRequest = createAction("productCreateRequest");
 const getAllProductsShopRequest = createAction("getAllProductsShopRequest");
+const deleteProductRequest = createAction("deleteProductRequest");
 const productCreateSuccess = createAction<{ payload: any }>("productCreateSuccess");
 const getAllProductsShopSuccess = createAction<{ payload: any }>("getAllProductsShopSuccess");
+const deleteProductSuccess = createAction<{ payload: any }>("deleteProductSuccess");
 const productCreateFail = createAction<{ payload: any }>("productCreateFail");
 const getAllProductsShopFailed = createAction<{ payload: any }>("getAllProductsShopFailed");
+const deleteProductFailed = createAction<{ payload: any }>("deleteProductFailed");
 const clearErrors = createAction("clearErrors");
 
 interface ProductState {
@@ -15,6 +18,7 @@ interface ProductState {
     products?: any;
     error?: any;
     success?: boolean;
+    message?: any
 };
 
 const initialState: ProductState = {
@@ -51,6 +55,19 @@ export const productReducer = createReducer(initialState, (builder) => {
         .addCase(getAllProductsShopFailed, (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
+        })
+
+        // delete product of a shop
+        .addCase(deleteProductRequest, (state, action) => {
+            state.isLoading = true
+        })
+        .addCase(deleteProductSuccess, (state, action) => {
+            state.isLoading = false
+            state.message = action?.payload
+        })
+        .addCase(deleteProductFailed, (state, action) => {
+            state.isLoading = false
+            state.error = action?.payload
         })
         .addCase(clearErrors, (state) => {
             state.error = null;
