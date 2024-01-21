@@ -15,7 +15,9 @@ const ShopDashboardPage: React.FC<ShopDashboardPageProps> = () => {
                 <div className="w-[80px] 800px:w-[330px]">
                     <DashboardSideBar active={1} />
                 </div>
-                <DashboardHero />
+                <div className="w-full justify-center flex">
+                    <DashboardHero />
+                </div>
             </div>
         </div>
     )

@@ -1,25 +1,25 @@
 import React from 'react';
-import CreateEvent from "../../components/Shop/CreateEvent.tsx";
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader.tsx';
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar.tsx';
+import AllEvents from "../../components/Shop/AllEvents.tsx";
 import { useDispatch } from 'react-redux';
-import { createEvent } from '../../redux/actions/event.tsx';
+import { getAllEventsShop } from '../../redux/actions/event.tsx';
 
-const ShopCreateEventsPage = () => {
+const ShopAllEventsPage = () => {
     const dispatch = useDispatch()
     return (
         <div>
             <DashboardHeader />
             <div className="flex items-start justify-between w-full">
                 <div className="w-[80px] 800px:w-[330px]">
-                    <DashboardSideBar active={6} />
+                    <DashboardSideBar active={5} />
                 </div>
                 <div className="w-full justify-center flex">
-                    <CreateEvent dispatch={dispatch} createEvent={createEvent} />
+                    <AllEvents dispatch={dispatch} getAllEventsShop={getAllEventsShop} />
                 </div>
             </div>
         </div>
     )
 }
 
-export default ShopCreateEventsPage
+export default ShopAllEventsPage

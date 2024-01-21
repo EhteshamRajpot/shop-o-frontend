@@ -24,8 +24,10 @@ import {
 import {
   ShopHomePage,
   ShopAllProducts,
+  ShopAllEventsPage,
   ShopDashboardPage,
   ShopCreateProduct,
+  ShopAllCoupounsPage,
   ShopCreateEventsPage,
 } from "./routes/ShopRoutes";
 
@@ -137,6 +139,21 @@ function App() {
           <ShopCreateEventsPage />
         </SellerProtectedRoutes>
     },
+    {
+      path: "/dashboard-events",
+      element:
+        <SellerProtectedRoutes>
+          <ShopAllEventsPage />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/dashboard-coupouns",
+      element:
+        <SellerProtectedRoutes>
+          <ShopAllCoupounsPage />
+        </SellerProtectedRoutes>
+    },
+    
 
   ]);
 

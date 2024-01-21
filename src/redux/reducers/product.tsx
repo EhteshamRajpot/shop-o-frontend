@@ -58,7 +58,7 @@ export const productReducer = createReducer(initialState, (builder) => {
         })
 
         // delete product of a shop
-        .addCase(deleteProductRequest, (state, action) => {
+        .addCase(deleteProductRequest, (state) => {
             state.isLoading = true
         })
         .addCase(deleteProductSuccess, (state, action) => {

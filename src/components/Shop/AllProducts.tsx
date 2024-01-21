@@ -13,7 +13,7 @@ interface AllProductsProps {
 }
 
 const AllProducts: React.FC<AllProductsProps> = ({ dispatch, getAllProductsShop }) => {
-  const { products, isLoading } = useSelector((state: any) => state.products)
+  const { products, isLoading, success } = useSelector((state: any) => state.products)
   const { seller } = useSelector((state: any) => state.seller)
 
   useEffect(() => {

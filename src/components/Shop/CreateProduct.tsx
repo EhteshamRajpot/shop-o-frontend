@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { categoriesData } from '../../static/data';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -10,7 +10,7 @@ interface CreateProductProps {
     createProduct: any
 }
 
-const CreateProduct: React.FC<CreateProductProps> = ({dispatch, createProduct}) => {
+const CreateProduct: React.FC<CreateProductProps> = ({ dispatch, createProduct }) => {
     const { seller } = useSelector((state: any) => state.seller)
     const { success, error } = useSelector((state: any) => state.product)
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const CreateProduct: React.FC<CreateProductProps> = ({dispatch, createProduct}) 
         }
         if (success) {
             toast.success("Product created successfully!");
-            navigate("/dashboard");
+            navigate("/dashboard-products");
             window.location.reload()
         }
     }, [dispatch, error, success])
