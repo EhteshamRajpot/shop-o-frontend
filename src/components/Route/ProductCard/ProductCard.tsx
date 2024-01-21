@@ -5,9 +5,10 @@ import { AiFillHeart, AiFillStar, AiOutlineEye, AiOutlineHeart, AiOutlineShoppin
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard.tsx";
 interface ProductCardProps {
     data: any,
-    isShop: any
+    isShop: any,
+    isEvent: any
 };
-const ProductCard: React.FC<ProductCardProps> = ({ data, isShop }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
     const [click, setClick] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -21,7 +22,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop }) => {
 
                 </div>
                 <Link to={`/product/${product_name}`}>
-                    <img src={data.image_Url[0].url} alt="" className='w-full h-[170px] object-contain' />
+                    <img
+                        src={`${data.images && data.images[0]}`}
+                        alt=""
+                        className="w-full h-[170px] object-contain"
+                    />
                 </Link>
                 <Link to="/">
                     <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
