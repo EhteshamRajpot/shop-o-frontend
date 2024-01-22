@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from '../../../styles/styles';
 import { AiFillHeart, AiFillStar, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineStar } from 'react-icons/ai';
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard.tsx";
+import { backend_url } from '../../../server.tsx';
 interface ProductCardProps {
     data: any,
     isShop: any,
@@ -23,7 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
                 </div>
                 <Link to={`/product/${product_name}`}>
                     <img
-                        src={`${data.images && data.images[0]}`}
+                        src={`${backend_url}${data?.images[0]}`}
                         alt=""
                         className="w-full h-[170px] object-contain"
                     />

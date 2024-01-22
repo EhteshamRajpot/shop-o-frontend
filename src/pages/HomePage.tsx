@@ -7,19 +7,20 @@ import FeaturedProduct from "../components/Route/FeaturedProduct/FeaturedProduct
 import Events from "../components/Events/Events.tsx";
 import Sponsored from "../components/Route/Sponsored.tsx";
 import Footer from "../components/Layout/Footer.tsx";
+import { getAllProducts } from '../redux/actions/product.tsx';
 
-interface HomePage {
+interface HomePageProps {
   activeHeading: number
 }
-const HomePage: React.FC<HomePage> = () => {
+const HomePage: React.FC<HomePageProps> = () => {
   return (
     <>
       <Header activeHeading={"1"} />
       <Hero />
       <Categories />
-      <BestDeals />
+      <BestDeals getAllProducts={getAllProducts} />
       <Events />
-      <FeaturedProduct />
+      <FeaturedProduct getAllProducts={getAllProducts} />
       <Sponsored />
       <Footer />
     </>
