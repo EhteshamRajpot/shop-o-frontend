@@ -5,42 +5,53 @@ import styles from '../styles/styles';
 import ProductCard from '../components/Route/ProductCard/ProductCard.tsx';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
+import { useDispatch, useSelector } from 'react-redux';
+import { all } from 'axios';
+import { getAllProducts } from '../redux/actions/product.tsx';
 
 interface Product {
-    id: number;
-    category: string;
+  id: number;
+  category: string;
+  name: string;
+  description: string;
+  image_Url: { public_id: string; url: string }[];
+  shop: {
     name: string;
-    description: string;
-    image_Url: { public_id: string; url: string }[];
-    shop: {
-      name: string;
-      shop_avatar: { public_id: string; url: string };
-      ratings: number;
-    };
-    price: number;
-    discount_price?: number;
-    rating: number;
-    reviews?: { user: any; comment: string; rating: number }[];
-    total_sell: number;
-    stock: number;
-  }
+    shop_avatar: { public_id: string; url: string };
+    ratings: number;
+  };
+  price: number;
+  discount_price?: number;
+  rating: number;
+  reviews?: { user: any; comment: string; rating: number }[];
+  total_sell: number;
+  stock: number;
+}
 
-  
+
 const ProductsPage: React.FC = () => {
+  const { allProducts } = useSelector((state: any) => state.products);
+  const dispatch = useDispatch();
+
+  // First useEffect to fetch all products
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
-  const [data, setData] = useState<Product[]>([]); // Explicitly provide the correct type here
+  const [data, setData] = useState<Product[]>([]);
 
+  // Second useEffect to filter and sort products when allProducts is available
   useEffect(() => {
-    if (categoryData === null) {
-      const d = productData && productData?.sort((a, b) => a?.total_sell - b?.total_sell);
-      setData((d || []) as Product []); // Ensure that an array is provided even if d is undefined
-    } else {
-      const d = productData && productData?.filter((i) => i?.category === categoryData);
-      setData((d || []) as Product []); // Ensure that an array is provided even if d is undefined
+    if (allProducts) {
+      const filteredAndSortedProducts = categoryData === null
+        ? allProducts.slice().sort((a: any, b: any) => a?.sold_out - b?.sold_out)
+        : allProducts.filter((i: any) => i?.category === categoryData);
+
+      setData(filteredAndSortedProducts);
     }
-    // window.scrollTo(0,0);
-  }, [categoryData]);
+  }, [allProducts, categoryData]);
 
   return (
     <div>

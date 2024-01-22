@@ -21,7 +21,8 @@ interface ProductState {
     products?: any;
     error?: any;
     success?: boolean;
-    message?: any
+    message?: any;
+    allProducts?: any
 };
 
 const initialState: ProductState = {
@@ -79,7 +80,7 @@ export const productReducer = createReducer(initialState, (builder) => {
         })
         .addCase(getAllProductsSuccess, (state, action) => {
             state.isLoading = false;
-            state.products = action.payload;
+            state.allProducts  = action.payload;
         })
         .addCase(getAllProductsFailed, (state, action) => {
             state.isLoading = false;

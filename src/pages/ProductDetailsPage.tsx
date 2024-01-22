@@ -5,6 +5,8 @@ import ProductDetails from '../components/Products/ProductDetails.tsx';
 import { useParams } from 'react-router-dom';
 import { productData } from '../static/data.tsx';
 import SuggestedProduct from "../components/Products/SuggestedProduct.tsx";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProducts, getAllProductsShop } from '../redux/actions/product.tsx';
 
 interface Product {
     id: number;
@@ -26,22 +28,40 @@ interface Product {
 }
 
 const ProductDetailsPage: React.FC<Product> = () => {
+    const { allProducts, loading } = useSelector((state: any) => state.products)
+    console.log("Product Data", allProducts)
     const { name } = useParams();
     const [data, setData] = useState<Product | null>(null);
+    const [productsLoaded, setProductsLoaded] = useState(false);
     const productName = name?.replace(/-/g, " ");
+    const dispatch = useDispatch()
+
 
     useEffect(() => {
-        const data = productData.find((i) => i.name === productName);
-        setData((data || []) as Product);
-    }, []);
+        dispatch(getAllProducts());
+    }, [dispatch]);
 
+    useEffect(() => {
+        if (allProducts && allProducts.length > 0) {
+            const product = allProducts.find((i: any) => i.name === productName);
+            setData(product || null);
+            setProductsLoaded(true);
+        }
+    }, [allProducts, productName]);
+
+    console.log("Products", data);
+
+    if (!productsLoaded && loading) {
+        // You can render a loading indicator here
+        return <p>Loading...</p>;
+    }
     return (
         <div>
             <Header activeHeading="" />
-            <ProductDetails data={data} />
-            {
+            <ProductDetails data={data} getAllProductsShop={getAllProductsShop} />
+            {/* {
                 data && <SuggestedProduct data={data}/>
-            }
+            } */}
             <Footer />
         </div>
     );

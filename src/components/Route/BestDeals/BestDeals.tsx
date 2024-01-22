@@ -10,7 +10,7 @@ interface BestDealsProps {
 const BestDeals: React.FC<BestDealsProps> = ({ getAllProducts }) => {
     const dispatch = useDispatch()
     const [data, setData] = useState<typeof productData | undefined>();
-    const { products } = useSelector((state: any) => state.products);
+    const { allProducts  } = useSelector((state: any) => state.products);
 
     useEffect(() => {
         const d = productData && productData.sort((a, b) => b.total_sell - a.total_sell);
@@ -34,8 +34,8 @@ const BestDeals: React.FC<BestDealsProps> = ({ getAllProducts }) => {
                         )
                     } */}
 
-                    {products && products?.length > 0 ? (
-                        products.map((i: any, index: any) => (
+                    {allProducts  && allProducts ?.length > 0 ? (
+                        allProducts .map((i: any, index: any) => (
                             <ProductCard data={i} key={index} isShop={true} isEvent={true} />
                         ))
                     ) : (

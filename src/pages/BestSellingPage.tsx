@@ -4,6 +4,8 @@ import Footer from '../components/Layout/Footer';
 import { productData } from '../static/data';
 import styles from '../styles/styles';
 import ProductCard from '../components/Route/ProductCard/ProductCard.tsx';
+import { getAllProducts } from '../redux/actions/product.tsx';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Product {
     id: number;
@@ -26,10 +28,21 @@ interface Product {
 
 const BestSellingPage: React.FC = () => {
     const [data, setData] = useState<Product[]>([])
+    const { allProducts } = useSelector((state: any) => state.products);
+    const dispatch = useDispatch();
+
+    // First useEffect to fetch all products
     useEffect(() => {
-        const d = productData && productData?.sort((a, b) => b.total_sell - a.total_sell);
-        setData((d || []) as Product[])
-    }, [])
+        dispatch(getAllProducts());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (allProducts && allProducts.length > 0) {
+            const d = allProducts && allProducts?.slice()?.sort((a:any, b:any) => b.sold_out - a.sold_out);
+            setData((d || []) as Product[])
+        }
+    }, [allProducts])
+    
     return (
         <>
             <div>
@@ -38,7 +51,7 @@ const BestSellingPage: React.FC = () => {
                 <br />
                 <div className={`${styles.section}`}>
                     <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
-                        {productData && productData.map((i, index) => <ProductCard data={i} key={index} />)}
+                        {data && data.map((i, index) => <ProductCard data={i} key={index} isShop={""} isEvent={""} />)}
                     </div>
                 </div>
                 <Footer />
