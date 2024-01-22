@@ -12,7 +12,7 @@ const EventCard:React.FC<EventCardProps> = ({active, data}) => {
     return (
         <div className={`w-full block bg-white rounded-lg ${active ? "unsent" : "mb-12"} lg:flex p-2 mb-12`}>
             <div className='w-full lg:-w[50%] m-auto'>
-                <img src={`${backend_url}${data.images[0]}`} alt="" />
+                <img src={`${backend_url}${data?.images[0]}`} alt="" />
             </div>
             <div className='w-full lg:[w-50%] flex flex-col justify-center'>
                 <h2 className={`${styles.productTitle}`}>{data?.name}</h2>
@@ -32,7 +32,7 @@ const EventCard:React.FC<EventCardProps> = ({active, data}) => {
                         {data?.sold_out} sold
                     </span>
                 </div>
-                <CountDown />
+                <CountDown data={data} />
             </div>
         </div>
     )

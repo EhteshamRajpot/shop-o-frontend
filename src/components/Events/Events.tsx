@@ -5,7 +5,10 @@ import EventCard from "./EventCard.tsx";
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllEvents } from '../../redux/actions/event.tsx';
 
-const Events = () => {
+interface EventsProps {
+    getAllEvents: any
+}
+const Events:React.FC<EventsProps> = ({getAllEvents}) => {
     const { allEvents, isLoading } = useSelector((state: any) => state.events)
     const dispatch = useDispatch()
     useEffect(() => {

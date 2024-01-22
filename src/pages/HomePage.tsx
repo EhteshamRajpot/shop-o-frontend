@@ -8,6 +8,7 @@ import Events from "../components/Events/Events.tsx";
 import Sponsored from "../components/Route/Sponsored.tsx";
 import Footer from "../components/Layout/Footer.tsx";
 import { getAllProducts } from '../redux/actions/product.tsx';
+import { getAllEvents } from '../redux/actions/event.tsx';
 
 interface HomePageProps {
   activeHeading: number
@@ -19,7 +20,7 @@ const HomePage: React.FC<HomePageProps> = () => {
       <Hero />
       <Categories />
       <BestDeals getAllProducts={getAllProducts} />
-      <Events />
+      <Events getAllEvents={getAllEvents} />
       <FeaturedProduct getAllProducts={getAllProducts} />
       <Sponsored />
       <Footer />

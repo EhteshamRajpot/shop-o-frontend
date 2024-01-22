@@ -5,9 +5,10 @@ interface TimeLeft {
     hours: number;
     minutes: number;
     seconds: number;
+    data: any[];
 }
 
-const CountDown: React.FC = () => {
+const CountDown: React.FC = ({data}) => {
     const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const CountDown: React.FC = () => {
     }, [timeLeft]);
 
     function calculateTimeLeft(): TimeLeft {
-        const difference = +new Date("2023-12-31") - +new Date();
+        const difference = +new Date(data?.Finish_Date) - +new Date();
         let timeLeft: TimeLeft = {
             days: 0,
             hours: 0,
