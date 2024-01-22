@@ -4,11 +4,14 @@ import { createReducer, createAction } from "@reduxjs/toolkit";
 const eventCreateRequest = createAction("eventCreateRequest");
 const getAllEventsShopRequest = createAction("getAllEventsShopRequest");
 const deleteEventRequest = createAction("deleteEventRequest");
+const getAllEventsRequest = createAction("getAllEventsRequest");
 const eventCreateSuccess = createAction<{ payload: any }>("eventCreateSuccess");
 const getAllEventsShopSuccess = createAction<{ payload: any }>("getAllEventsShopSuccess");
+const getAllEventsSuccess = createAction<{ payload: any }>("getAllEventsSuccess");
 const deleteEventSuccess = createAction<{ payload: any }>("deleteEventSuccess");
 const eventCreateFail = createAction<{ payload: any }>("eventCreateFail");
 const getAllEventsShopFailed = createAction<{ payload: any }>("getAllEventsShopFailed");
+const getAllEventsFailed = createAction<{ payload: any }>("getAllEventsFailed");
 const deleteEventFailed = createAction<{ payload: any }>("deleteEventFailed");
 const clearErrors = createAction("clearErrors");
 
@@ -17,7 +20,8 @@ interface EventState {
     events?: any;
     error?: any;
     success?: boolean;
-    message?: any
+    message?: any;
+    allEvents?: any;
 };
 
 const initialState: EventState = {
@@ -52,6 +56,19 @@ export const eventReducer = createReducer(initialState, (builder) => {
             state.events = action.payload;
         })
         .addCase(getAllEventsShopFailed, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        })
+
+        // get all event events
+        .addCase(getAllEventsRequest, (state) => {
+            state.isLoading = true;
+        })
+        .addCase(getAllEventsSuccess, (state, action) => {
+            state.isLoading = false;
+            state.allEvents = action.payload;
+        })
+        .addCase(getAllEventsFailed, (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
         })
