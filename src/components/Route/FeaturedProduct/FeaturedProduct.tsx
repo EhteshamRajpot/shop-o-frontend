@@ -11,9 +11,6 @@ const FeaturedProduct: React.FC<FeaturedProductProps> = ({ getAllProducts }) => 
     const dispatch = useDispatch()
     const { allProducts  } = useSelector((state: any) => state.products);
     
-    useEffect(() => {
-        dispatch(getAllProducts())
-    }, [dispatch])
 
     return (
         <div>

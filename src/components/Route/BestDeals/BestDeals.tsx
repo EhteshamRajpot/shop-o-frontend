@@ -16,7 +16,6 @@ const BestDeals: React.FC<BestDealsProps> = ({ getAllProducts }) => {
         const d = productData && productData.sort((a, b) => b.total_sell - a.total_sell);
         const firstFive = d?.slice(0, 5);
         setData(firstFive);
-        dispatch(getAllProducts())
     }, []);
 
     return (

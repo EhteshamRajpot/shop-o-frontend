@@ -36,12 +36,16 @@ import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
 import ProtectedRoutes from "./protectedRoutes/ProtectedRoutes";
 import SellerProtectedRoutes from "./protectedRoutes/SellerProtectedRoutes";
+import { getAllProducts } from "./redux/actions/product";
+import { getAllEvents } from "./redux/actions/event";
 
 function App() {
 
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    Store.dispatch(getAllEvents());
+    Store.dispatch(getAllProducts());
   }, [])
 
   const router = createBrowserRouter([
