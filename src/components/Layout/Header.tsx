@@ -23,6 +23,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
     const { isAuthenticated, user, loading } = useSelector((state: any) => state.user);
     const { cart } = useSelector((state: any) => state.cart)
     const { wishlist } = useSelector((state: any) => state.wishlist)
+    const { allProducts } = useSelector((state: any) => state.products);
 
     const [searchTerm, setSearchTerm] = useState("")
     const [searchData, setSearchData] = useState<any[] | null>(null)
@@ -36,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
         const term = (e.target as HTMLInputElement).value;
         setSearchTerm(term);
 
-        const filteredProducts = productData && productData.filter((product) =>
+        const filteredProducts = allProducts && allProducts.filter((product: any) =>
             product.name.toLowerCase().includes(term.toLowerCase())
         );
         setSearchData(filteredProducts);
@@ -77,12 +78,10 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                             <div className='absolute min-h-[30hv] bg-slate-50 shadow-sm-2 z-[9] p-4'>
                                                 {
                                                     searchData && searchData.map((i: any, index: any) => {
-                                                        const d = i.name;
-                                                        const Product_name = d.replace(/\s+/g, "-");
                                                         return (
-                                                            <Link to={`/product/${Product_name}`}>
+                                                            <Link to={`/product/${i?._id}`}>
                                                                 <div className='w-full flex items-start-py-3'>
-                                                                    <img src={i.image_Url[0].url} alt="" className='w-[40px] h-[40px] mr-[10px]' />
+                                                                    <img src={`${backend_url}${i?.images[0]}`} alt="" className='w-[40px] h-[40px] mr-[10px]' />
                                                                     <h1>{i?.name}</h1>
                                                                 </div>
                                                             </Link>

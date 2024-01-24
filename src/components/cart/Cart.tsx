@@ -130,10 +130,13 @@ const CartSingle: React.FC<CartSingleProps> = ({ data, quantityChangeHandler, re
                             US${totalPrice}
                         </h4>
                     </div>
-                    <RxCross1
-                        className="cursor-pointer"
-                        onClick={() => removeFromCartHandler(data)}
-                    />
+
+                    <div className='ml-auto'>
+                        <RxCross1
+                            className="cursor-pointer"
+                            onClick={() => removeFromCartHandler(data)}
+                        />
+                    </div>
                 </div>
             </div>
         </>

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { backend_url } from '../../server';
+import { toast } from 'react-toastify';
 
 interface CartProps {
     addTocart: any,
@@ -16,6 +17,7 @@ interface CartProps {
 
 const Wishlist: React.FC<CartProps> = ({ setOpenWishlist, removeFromWishlist, addTocart }) => {
     const { wishlist } = useSelector((state: any) => state.wishlist)
+    const { cart } = useSelector((state: any) => state.cart)
 
     const dispatch = useDispatch();
 
@@ -24,9 +26,15 @@ const Wishlist: React.FC<CartProps> = ({ setOpenWishlist, removeFromWishlist, ad
     };
 
     const addToCartHandler = (data: any) => {
-        const newData = { ...data, qty: 1 };
-        dispatch(addTocart(newData));
-        setOpenWishlist(false);
+        const isItemExists = cart && cart.find((i: any) => i._id === data?._id)
+        if (isItemExists) {
+            toast.error("Item already in cart")
+        } else {
+            const newData = { ...data, qty: 1 };
+            dispatch(addTocart(newData));
+            toast.success("Item added to cart successfully!")
+            // setOpenWishlist(false);
+        }
     }
 
 
@@ -87,7 +95,7 @@ const CartSingle: React.FC<CartSingleProps> = ({ data, removeFromWishlistHandler
                             US${totalPrice}
                         </h4>
                     </div>
-                    <div>
+                    <div className='ml-auto'>
                         <BsCartPlus size={20} className="cursor-pointer" title="Add to cart"
                             onClick={() => addToCartHandler(data)}
                         />

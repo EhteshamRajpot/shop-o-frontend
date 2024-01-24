@@ -89,8 +89,8 @@ function App() {
       element: <FAQPage />,
     },
     {
-      path: "/product/:name",
-      element: <ProductDetailsPage />,
+      path: "/product/:id",
+      element: <ProductDetailsPage getAllProducts={getAllProducts} />,
     },
     {
       path: "/profile",

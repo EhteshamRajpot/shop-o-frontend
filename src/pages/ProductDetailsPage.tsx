@@ -6,7 +6,9 @@ import { useParams } from 'react-router-dom';
 import { productData } from '../static/data.tsx';
 import SuggestedProduct from "../components/Products/SuggestedProduct.tsx";
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProducts, getAllProductsShop } from '../redux/actions/product.tsx';
+import { getAllProductsShop } from '../redux/actions/product.tsx';
+import { addToWishlist, removeFromWishlist } from '../redux/actions/wishlist.tsx';
+import { addTocart } from '../redux/actions/cart.tsx';
 
 interface Product {
     id: number;
@@ -25,15 +27,16 @@ interface Product {
     reviews?: { user: any; comment: string; rating: number }[];
     total_sell: number;
     stock: number;
+    getAllProducts: any
 }
 
-const ProductDetailsPage: React.FC<Product> = () => {
+const ProductDetailsPage: React.FC<Product> = ({getAllProducts}) => {
     const { allProducts, loading } = useSelector((state: any) => state.products)
     console.log("Product Data", allProducts)
-    const { name } = useParams();
+    const { id } = useParams();
     const [data, setData] = useState<Product | null>(null);
     const [productsLoaded, setProductsLoaded] = useState(false);
-    const productName = name?.replace(/-/g, " ");
+    // const productName = name?.replace(/-/g, " ");
     const dispatch = useDispatch()
 
 
@@ -43,13 +46,11 @@ const ProductDetailsPage: React.FC<Product> = () => {
 
     useEffect(() => {
         if (allProducts && allProducts.length > 0) {
-            const product = allProducts.find((i: any) => i.name === productName);
+            const product = allProducts.find((i: any) => i?._id === id);
             setData(product || null);
             setProductsLoaded(true);
         }
-    }, [allProducts, productName]);
-
-    console.log("Products", data);
+    }, [allProducts, data]);
 
     if (!productsLoaded && loading) {
         // You can render a loading indicator here
@@ -58,7 +59,13 @@ const ProductDetailsPage: React.FC<Product> = () => {
     return (
         <div>
             <Header activeHeading="" />
-            <ProductDetails data={data} getAllProductsShop={getAllProductsShop} />
+            <ProductDetails
+                data={data}
+                addTocart={addTocart}
+                addToWishlist={addToWishlist}
+                getAllProductsShop={getAllProductsShop}
+                removeFromWishlist={removeFromWishlist}
+            />
             {/* {
                 data && <SuggestedProduct data={data}/>
             } */}

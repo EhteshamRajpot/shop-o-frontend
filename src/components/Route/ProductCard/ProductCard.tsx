@@ -22,10 +22,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, remove
     const [click, setClick] = useState(false);
     const [open, setOpen] = useState(false);
 
-    const d = data.name;
-    const product_name = d.replace(/\s+/g, "-")
-
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (wishlist && wishlist.find((i: any) => i._id === data._id)) {
@@ -66,7 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, remove
                 <div className='flex justify-end'>
 
                 </div>
-                <Link to={`/product/${product_name}`}>
+                <Link to={`/product/${data?._id}`}>
                     <img
                         src={`${backend_url}${data?.images[0]}`}
                         alt=""
@@ -76,7 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, remove
                 <Link to="/">
                     <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
                 </Link>
-                <Link to={`/product/${product_name}`}>
+                <Link to={`/product/${data?._id}`}>
                     <h4 className='pb-3 font-[500]'>
                         {data?.name?.length > 40 ? data?.name?.slice(0, 40) + "..." : data?.name}
                     </h4>

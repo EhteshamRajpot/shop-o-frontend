@@ -4,20 +4,58 @@ import styles from '../../styles/styles';
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai';
 import { backend_url } from '../../server';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 interface ProductDetailsProps {
     data: any,
-    getAllProductsShop: any
+    addTocart: any,
+    addToWishlist: any,
+    getAllProductsShop: any,
+    removeFromWishlist: any,
 }
-const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsShop }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsShop, removeFromWishlist, addToWishlist, addTocart }) => {
+    const { wishlist } = useSelector((state: any) => state.wishlist);
+    const { cart } = useSelector((state: any) => state.cart);
     const { products } = useSelector((state: any) => state.products);
+
     const dispatch = useDispatch();
+
     const [count, setCount] = useState(1);
     const [click, setClick] = useState(false);
     const [select, setSelect] = useState(0);
 
     useEffect(() => {
         dispatch(getAllProductsShop(data && data?.shop._id));
-    }, [dispatch, products]);
+        if (wishlist && wishlist.find((i: any) => i?._id === data?._id)) {
+            setClick(true);
+        } else {
+            setClick(false);
+        }
+    }, [dispatch, products, wishlist]);
+
+    const removeFromWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(removeFromWishlist(data));
+    };
+
+    const addToWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(addToWishlist(data));
+    };
+
+    const addToCartHandler = (id: any) => {
+        const isItemExists = cart && cart.find((i: any) => i._id === id);
+        if (isItemExists) {
+            toast.error("Item already in cart!");
+        } else {
+            if (data.stock < 1) {
+                toast.error("Product stock limited!");
+            } else {
+                const cartData = { ...data, qty: count };
+                dispatch(addTocart(cartData));
+                toast.success("Item added to cart successfully!");
+            }
+        }
+    };
 
     const incrementCount = () => {
         setCount(count + 1)
@@ -28,7 +66,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
             setCount(count - 1)
         }
     }
-    console.log("Product Detail", data)
+
     return (
         <>
             <div className='bg-white'>
@@ -87,7 +125,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                                     <AiFillHeart
                                                         size={30}
                                                         className="cursor-pointer"
-                                                        onClick={() => setClick(!click)}
+                                                        onClick={() => removeFromWishlistHandler(data)}
                                                         color={click ? "red" : "#333"}
                                                         title="Remove from wishlist"
                                                     />
@@ -95,16 +133,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                                     <AiOutlineHeart
                                                         size={30}
                                                         className="cursor-pointer"
-                                                        onClick={() => setClick(!click)}
+                                                        onClick={() => addToWishlistHandler(data)}
                                                         color={click ? "red" : "#333"}
                                                         title="Add to wishlist"
                                                     />
                                                 )}
                                             </div>
                                         </div>
-                                        <div className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}>
+                                        <div className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`} onClick={() => addToCartHandler(data._id)}>
                                             <span className="text-white flex items-center">
-                                                Add to cart <AiOutlineShoppingCart className="ml-1" />
+                                                Add to cart <AiOutlineShoppingCart className="ml-1"
+                                                />
                                             </span>
                                         </div>
                                         <div className="flex items-center pt-8">
