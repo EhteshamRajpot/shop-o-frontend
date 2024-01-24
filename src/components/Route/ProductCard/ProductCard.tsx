@@ -130,7 +130,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, remove
                     <AiOutlineShoppingCart
                         size={22}
                         className='cursor-pointer absolute right-2 top-24'
-                        onClick={() => setClick(!open)}
+                        onClick={() => addToCartHandler(data._id)}
                         color="#333"
                         title="Add to cart"
                     />
@@ -140,8 +140,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, remove
                                 data={data}
                                 setOpen={setOpen}
                                 addTocart={addTocart}
-                                addToWishlistHandler={addToWishlistHandler}
-                                removeFromWishlistHandler={removeFromWishlistHandler}
+                                addToWishlist={addToWishlist}
+                                removeFromWishlist={removeFromWishlist}
                             />
                         ) : null
                     }

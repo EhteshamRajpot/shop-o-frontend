@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { RxCross1 } from 'react-icons/rx'
 import styles from '../../../styles/styles';
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai';
@@ -9,11 +9,13 @@ interface ProductDetailsCardProps {
     data: any,
     setOpen: any,
     addTocart: any,
-    addToWishlistHandler: any
-    removeFromWishlistHandler: any,
+    addToWishlist: any, 
+    removeFromWishlist: any
 }
-const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart, removeFromWishlistHandler, addToWishlistHandler }) => {
+const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart, addToWishlist, removeFromWishlist}) => {
     const { cart } = useSelector((state: any) => state.cart)
+    const { wishlist } = useSelector((state: any) => state.wishlist)
+
     const [count, setCount] = useState(1);
     const [click, setClick] = useState(false);
     const [select, setSelect] = useState(false);
@@ -44,7 +46,26 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, 
             }
         }
 
-    }
+    };
+
+
+    useEffect(() => {
+        if (wishlist && wishlist.find((i: any) => i._id === data._id)) {
+            setClick(true);
+        } else {
+            setClick(false);
+        }
+    }, [wishlist]);
+
+    const removeFromWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(removeFromWishlist(data));
+    };
+
+    const addToWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(addToWishlist(data));
+    };
 
     return (
         <div className='bg-[#fff]'>
@@ -117,7 +138,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, 
                                                 <AiFillHeart
                                                     size={30}
                                                     className="cursor-pointer"
-                                                    onClick={() => addToWishlistHandler(data)}
+                                                    onClick={() => removeFromWishlistHandler(data)}
                                                     color={click ? "red" : "#333"}
                                                     title="Remove from wishlist"
                                                 />
@@ -125,7 +146,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, 
                                                 <AiOutlineHeart
                                                     size={30}
                                                     className="cursor-pointer"
-                                                    onClick={() => removeFromWishlistHandler(data)}
+                                                    onClick={() => addToWishlistHandler(data)}
                                                     title="Add to wishlist"
                                                 />
                                             )}

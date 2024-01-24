@@ -14,6 +14,7 @@ import Cart from "../cart/Cart.tsx";
 import Wishlist from "../Wishlist/Wishlist.tsx";
 import { RxCross1 } from 'react-icons/rx';
 import { addTocart, removeFromCart } from '../../redux/actions/cart.tsx';
+import { removeFromWishlist } from '../../redux/actions/wishlist.tsx';
 
 interface HeaderProps {
     activeHeading: string
@@ -21,6 +22,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
     const { isAuthenticated, user, loading } = useSelector((state: any) => state.user);
     const { cart } = useSelector((state: any) => state.cart)
+    const { wishlist } = useSelector((state: any) => state.wishlist)
+
     const [searchTerm, setSearchTerm] = useState("")
     const [searchData, setSearchData] = useState<any[] | null>(null)
     const [active, setActive] = useState(false);
@@ -139,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                         >
                                             <AiOutlineHeart size={30} color='white' />
                                             <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
-                                                0
+                                                {wishlist.length}
                                             </span>
                                         </div>
                                     </div>
@@ -171,7 +174,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                     {openCart ? <Cart setOpenCart={setOpenCart} removeFromCart={removeFromCart} addTocart={addTocart} /> : null}
 
                                     {/* wishlist popup */}
-                                    {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} /> : null}
+                                    {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} removeFromWishlist={removeFromWishlist} addTocart={addTocart} /> : null}
                                 </div>
                             </div>
                         </div>
@@ -217,7 +220,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                     {openCart ? <Cart setOpenCart={setOpenCart} removeFromCart={removeFromCart} addTocart={addTocart} /> : null}
 
                     {/* wishlist popup */}
-                    {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} /> : null}
+                    {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} removeFromWishlist={removeFromWishlist} addTocart={addTocart} /> : null}
                 </div>
 
                 {/* header sidebar */}
