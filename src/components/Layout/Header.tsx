@@ -13,12 +13,14 @@ import { backend_url } from '../../server.tsx';
 import Cart from "../cart/Cart.tsx";
 import Wishlist from "../Wishlist/Wishlist.tsx";
 import { RxCross1 } from 'react-icons/rx';
+import { addTocart, removeFromCart } from '../../redux/actions/cart.tsx';
 
 interface HeaderProps {
     activeHeading: string
 }
 const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
-    const { isAuthenticated, user, loading } = useSelector((state: any) => state.user)
+    const { isAuthenticated, user, loading } = useSelector((state: any) => state.user);
+    const { cart } = useSelector((state: any) => state.cart)
     const [searchTerm, setSearchTerm] = useState("")
     const [searchData, setSearchData] = useState<any[] | null>(null)
     const [active, setActive] = useState(false);
@@ -145,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                         <div className='relative cursor-pointer mr-[15px]' onClick={() => setOpenCart(true)}>
                                             <AiOutlineShoppingCart size={30} color='white' />
                                             <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
-                                                1
+                                                {cart && cart.length}
                                             </span>
                                         </div>
                                     </div>
@@ -166,7 +168,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                     </div>
 
                                     {/* cart popup */}
-                                    {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
+                                    {openCart ? <Cart setOpenCart={setOpenCart} removeFromCart={removeFromCart} addTocart={addTocart} /> : null}
 
                                     {/* wishlist popup */}
                                     {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} /> : null}
@@ -212,7 +214,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                         </div>
                     </div>
                     {/* cart popup */}
-                    {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
+                    {openCart ? <Cart setOpenCart={setOpenCart} removeFromCart={removeFromCart} addTocart={addTocart} /> : null}
 
                     {/* wishlist popup */}
                     {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} /> : null}
@@ -228,7 +230,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                 <div>
                                     <div
                                         className="relative mr-[15px]"
-                                        // onClick={() => setOpenWishlist(true) || setOpen(false)}
+                                    // onClick={() => setOpenWishlist(true) || setOpen(false)}
                                     >
                                         <AiOutlineHeart size={30} className="mt-5 ml-3" />
                                         <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">

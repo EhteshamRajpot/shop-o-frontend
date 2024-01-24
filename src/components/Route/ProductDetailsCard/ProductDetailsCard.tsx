@@ -2,14 +2,47 @@ import React, { useState } from 'react'
 import { RxCross1 } from 'react-icons/rx'
 import styles from '../../../styles/styles';
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai';
+import { backend_url } from '../../../server';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 interface ProductDetailsCardProps {
     setOpen: any,
-    data: any
+    data: any,
+    addTocart: any
 }
-const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data }) => {
+const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart }) => {
+    const { cart } = useSelector((state: any) => state.cart)
     const [count, setCount] = useState(1);
     const [click, setClick] = useState(false);
     const [select, setSelect] = useState(false);
+
+    const incrementCount = () => {
+        setCount(count + 1)
+    }
+
+    const decrementCount = () => {
+        if (count > 1) {
+            setCount(count - 1)
+        }
+    }
+
+    const dispatch = useDispatch()
+
+    const addToCartHandler = (id: any) => {
+        const isItemExists = cart && cart.find((i: any) => i._id === id)
+        if (isItemExists) {
+            toast.error("Item already in cart")
+        } else {
+            if (data?.stock < count) {
+                toast.error("Product stock limited!")
+            } else {
+                const cartData = { ...data, qty: count }
+                dispatch(addTocart(cartData));
+                toast.success("Item added to cart successfully!")
+            }
+        }
+
+    }
 
     return (
         <div className='bg-[#fff]'>
@@ -24,9 +57,9 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data }
                             />
                             <div className="block w-full 800px:flex">
                                 <div className='w-full 800px:w-[50%]'>
-                                    <img src={data?.image_Url[0].url} alt="" />
+                                    <img src={`${backend_url}${data?.images[0]}`} alt="" />
                                     <div className='flex'>
-                                        <img src={data.shop.shop_avatar.url} alt="" className='w-[50px] h-[50px] rounded-full mr-2' />
+                                        <img src={`${backend_url}${data?.shop?.avatar}`} alt="" className='w-[50px] h-[50px] rounded-full mr-2' />
                                         <div>
                                             <h3 className={`${styles.shop_name}`}>
                                                 {data.shop.name}
@@ -44,7 +77,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data }
                                         </span>
                                     </div>
                                     <h5 className='text-[16px] text-[red] mt-5'>
-                                        ({data?.total_sell}) Sold out
+                                        ({data?.sold_out}) Sold out
                                     </h5>
                                 </div>
                                 <div className='w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]'>
@@ -54,15 +87,16 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data }
                                     <p>{data?.description}</p>
                                     <div className="flex pt-3">
                                         <h4 className={`${styles.productDiscountPrice}`}>
-                                            {data?.discount_price}
+                                            {data?.discountPrice} $
                                         </h4>
-                                        <h3 className={`${styles.price}`}>{data?.price ? data?.price + "$" : null}</h3>
-                                    </div>
+                                        <h3 className={`${styles.price}`}>
+                                            {data.originalPrice ? data.originalPrice + "$" : null}
+                                        </h3></div>
                                     <div className="flex items-center mt-12 justify-between pr-3">
                                         <div>
                                             <button
                                                 className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                                            // onClick={incrementCount}
+                                                onClick={decrementCount}
                                             >
                                                 -
                                             </button>
@@ -71,7 +105,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data }
                                             </span>
                                             <button
                                                 className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                                            // onClick={incrementCount}
+                                                onClick={incrementCount}
                                             >
                                                 +
                                             </button>
@@ -96,7 +130,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data }
                                         </div>
                                     </div>
                                     <div className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
-                                    //   onClick={() => addToCartHandler(data._id)}
+                                        onClick={() => addToCartHandler(data._id)}
                                     >
                                         <span className="text-[#fff] flex items-center">
                                             Add to cart <AiOutlineShoppingCart className="ml-1" />

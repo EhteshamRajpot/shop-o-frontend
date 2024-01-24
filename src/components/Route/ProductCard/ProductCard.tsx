@@ -4,6 +4,7 @@ import styles from '../../../styles/styles';
 import { AiFillHeart, AiFillStar, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineStar } from 'react-icons/ai';
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard.tsx";
 import { backend_url } from '../../../server.tsx';
+import { addTocart } from '../../../redux/actions/cart.tsx';
 interface ProductCardProps {
     data: any,
     isShop: any,
@@ -92,9 +93,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
                     />
                     {
                         open ? (
-                            <ProductDetailsCard setOpen={setOpen} data={data} />
+                            <ProductDetailsCard setOpen={setOpen} data={data} addTocart={addTocart} />
                         ) : null
                     }
+                    
                 </div>
             </div>
         </>
