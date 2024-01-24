@@ -1,21 +1,64 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import styles from '../../../styles/styles';
 import { AiFillHeart, AiFillStar, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineStar } from 'react-icons/ai';
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard.tsx";
 import { backend_url } from '../../../server.tsx';
 import { addTocart } from '../../../redux/actions/cart.tsx';
+import { removeFromWishlist } from "../../../redux/actions/wishlist.tsx";
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 interface ProductCardProps {
     data: any,
     isShop: any,
-    isEvent: any
+    isEvent: any,
+    addTocart: any,
+    addToWishlist: any,
+    removeFromWishlist: any,
 };
-const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, removeFromWishlist, addToWishlist, addTocart }) => {
+    const { wishlist } = useSelector((state: any) => state.wishlist);
+    const { cart } = useSelector((state: any) => state.cart);
     const [click, setClick] = useState(false);
     const [open, setOpen] = useState(false);
 
     const d = data.name;
     const product_name = d.replace(/\s+/g, "-")
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (wishlist && wishlist.find((i: any) => i._id === data._id)) {
+            setClick(true);
+        } else {
+            setClick(false);
+        }
+    }, [wishlist]);
+
+    const removeFromWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(removeFromWishlist(data));
+    };
+
+    const addToWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(addToWishlist(data));
+    };
+
+    const addToCartHandler = (id: any) => {
+        const isItemExists = cart && cart.find((i: any) => i._id === id);
+        if (isItemExists) {
+            toast.error("Item already in cart!");
+        } else {
+            if (data.stock < 1) {
+                toast.error("Product stock limited!");
+            } else {
+                const cartData = { ...data, qty: 1 };
+                dispatch(addTocart(cartData));
+                toast.success("Item added to cart successfully!");
+            }
+        }
+    };
 
     return (
         <>
@@ -64,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
                         <AiFillHeart
                             size={22}
                             className='cursor-pointer absolute right-2 top-5'
-                            onClick={() => setClick(!click)}
+                            onClick={() => removeFromWishlistHandler(data)}
                             color={click ? "red" : "#333"}
                             title="Remove from wishlist"
                         />
@@ -72,7 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
                         <AiOutlineHeart
                             size={22}
                             className='cursor-pointer absolute right-2 top-5'
-                            onClick={() => setClick(!click)}
+                            onClick={() => addToWishlistHandler(data)}
                             color={click ? "red" : "#333"}
                             title="Add to wishlist"
                         />
@@ -93,10 +136,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent }) => {
                     />
                     {
                         open ? (
-                            <ProductDetailsCard setOpen={setOpen} data={data} addTocart={addTocart} />
+                            <ProductDetailsCard
+                                data={data}
+                                setOpen={setOpen}
+                                addTocart={addTocart}
+                                addToWishlistHandler={addToWishlistHandler}
+                                removeFromWishlistHandler={removeFromWishlistHandler}
+                            />
                         ) : null
                     }
-                    
+
                 </div>
             </div>
         </>

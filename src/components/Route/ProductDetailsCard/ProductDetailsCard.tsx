@@ -6,11 +6,13 @@ import { backend_url } from '../../../server';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 interface ProductDetailsCardProps {
-    setOpen: any,
     data: any,
-    addTocart: any
+    setOpen: any,
+    addTocart: any,
+    addToWishlistHandler: any
+    removeFromWishlistHandler: any,
 }
-const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart }) => {
+const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart, removeFromWishlistHandler, addToWishlistHandler }) => {
     const { cart } = useSelector((state: any) => state.cart)
     const [count, setCount] = useState(1);
     const [click, setClick] = useState(false);
@@ -115,7 +117,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, 
                                                 <AiFillHeart
                                                     size={30}
                                                     className="cursor-pointer"
-                                                    // onClick={() => removeFromWishlistHandler(data)}
+                                                    onClick={() => addToWishlistHandler(data)}
                                                     color={click ? "red" : "#333"}
                                                     title="Remove from wishlist"
                                                 />
@@ -123,7 +125,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, 
                                                 <AiOutlineHeart
                                                     size={30}
                                                     className="cursor-pointer"
-                                                    // onClick={() => addToWishlistHandler(data)}
+                                                    onClick={() => removeFromWishlistHandler(data)}
                                                     title="Add to wishlist"
                                                 />
                                             )}
