@@ -3,10 +3,13 @@ import { createReducer, createAction } from "@reduxjs/toolkit";
 // Define actions
 const loadUserRequest = createAction("LoadUserRequest");
 const updateUserInfoRequest = createAction("updateUserInfoRequest");
+const updateUserAddressRequest = createAction("updateUserAddressRequest");
 const loadUserSuccess = createAction<{ payload: any }>("LoadUserSuccess");
 const updateUserInfoSuccess = createAction<{ payload: any }>("updateUserInfoSuccess");
+const updateUserAddressSucess = createAction<{ payload: any }>("updateUserAddressSucess");
 const loadUserFail = createAction<{ payload: any }>("LoadUserFail");
 const updateUserInfoFailed = createAction<{ payload: any }>("updateUserInfoFailed");
+const updateUserAddressFailed = createAction<{ payload: any }>("updateUserAddressFailed");
 const clearErrors = createAction("clearErrors");
 
 interface UserState {
@@ -47,6 +50,19 @@ export const userReducer = createReducer(initialState, (builder) => {
     .addCase(updateUserInfoFailed, (state, action) => {
       state.loading = false;
       state.error = action.payload
+    })
+
+    // update user address
+    .addCase(updateUserAddressRequest, (state) => {
+      state.loading = true
+    })
+    .addCase(updateUserAddressSucess, (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+    })
+    .addCase(updateUserAddressFailed, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     })
 
     .addCase(clearErrors, (state) => {

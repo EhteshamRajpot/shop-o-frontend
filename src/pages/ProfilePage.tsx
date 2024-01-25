@@ -5,7 +5,7 @@ import ProfileContent from "../components/Profile/ProfileContent.tsx";
 import { useSelector } from 'react-redux';
 import styles from '../styles/styles.tsx';
 import { useNavigate } from 'react-router-dom';
-import { updateUserInformation } from '../redux/actions/user.tsx';
+import { updatUserAddress, updateUserInformation } from '../redux/actions/user.tsx';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ const ProfilePage = () => {
                         <div className="w-[50px] 800px:w-[335px] sticky 800px:mt-0 mt-[18%]">
                             <ProfileSideBar active={active} setActive={setActive} />
                         </div>
-                        <ProfileContent active={active} updateUserInformation={updateUserInformation} />
+                        <ProfileContent active={active} updateUserInformation={updateUserInformation} updatUserAddress={updatUserAddress} />
                     </div>
                     <div style={{ marginBottom: "70px" }}></div>
                 </>
