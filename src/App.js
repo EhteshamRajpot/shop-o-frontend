@@ -24,6 +24,7 @@ import {
 import {
   ShopHomePage,
   ShopAllProducts,
+  ShopPreviewPage,
   ShopAllEventsPage,
   ShopDashboardPage,
   ShopCreateProduct,
@@ -157,7 +158,11 @@ function App() {
           <ShopAllCoupounsPage />
         </SellerProtectedRoutes>
     },
-    
+    {
+      path: "/shop/preview/:id",
+      element: <ShopPreviewPage />
+    },
+
 
   ]);
 

@@ -11,7 +11,7 @@ interface ShopProfileDataProps {
     getAllProductsShop: any,
     getAllEventsShop: any
 }
-const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEventsShop, getAllProductsShop }) => {
+const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEventsShop, getAllProductsShop, isEvent }) => {
     const { products } = useSelector((state: any) => state.products);
     const { events } = useSelector((state: any) => state.events);
     const dispatch = useDispatch();
