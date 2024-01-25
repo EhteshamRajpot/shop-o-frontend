@@ -116,7 +116,7 @@ const ProfileSidebar: React.FC<ProfileSideBarProps> = ({ active, setActive }) =>
             >
                 <RiLockPasswordLine size={20} color={active === 8 ? "red" : ""} />
                 <span
-                    className={`pl-3 ${active === 6 ? "text-[red]" : ""
+                    className={`pl-3 ${active === 8 ? "text-[red]" : ""
                         } 800px:block hidden`}
                 >
                     Change Password
@@ -159,9 +159,9 @@ const ProfileSidebar: React.FC<ProfileSideBarProps> = ({ active, setActive }) =>
                 className="single_item flex items-center cursor-pointer w-full mb-8"
                 onClick={() => setActive(8) || logoutHandler()}
             >
-                <AiOutlineLogin size={20} color={active === 8 ? "red" : ""} />
+                <AiOutlineLogin size={20} color={active === 9 ? "red" : ""} />
                 <span
-                    className={`pl-3 ${active === 8 ? "text-[red]" : ""
+                    className={`pl-3 ${active === 9 ? "text-[red]" : ""
                         } 800px:block hidden`}
                 >
                     Log out

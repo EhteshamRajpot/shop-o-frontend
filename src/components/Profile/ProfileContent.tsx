@@ -190,6 +190,15 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
                 )
             }
 
+            {/* Change Password page */}
+            {
+                active === 8 && (
+                    <div>
+                        <ChangePassword />
+                    </div>
+                )
+            }
+
             {/* User Address */}
             {
                 active === 7 && (
@@ -555,7 +564,7 @@ const ChangePassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const passwordChangeHandler = async (e: FormEvent<HTMLFormElement>) => {
+    const passwordChangeHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         await axios
