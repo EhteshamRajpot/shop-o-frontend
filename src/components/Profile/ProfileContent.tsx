@@ -613,7 +613,7 @@ const ChangePassword = () => {
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                         />
-                    </div>
+                    </div> 
                     <div className=" w-[100%] 800px:w-[50%] mt-2">
                         <label className="block pb-2">Enter your confirm password</label>
                         <input
