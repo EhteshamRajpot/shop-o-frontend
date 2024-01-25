@@ -1,22 +1,27 @@
 import { createReducer, createAction } from "@reduxjs/toolkit";
 
 // Define actions
-const loadUserRequest = createAction("LoadUserRequest");
-const updateUserInfoRequest = createAction("updateUserInfoRequest");
-const updateUserAddressRequest = createAction("updateUserAddressRequest");
-const loadUserSuccess = createAction<{ payload: any }>("LoadUserSuccess");
-const updateUserInfoSuccess = createAction<{ payload: any }>("updateUserInfoSuccess");
-const updateUserAddressSucess = createAction<{ payload: any }>("updateUserAddressSucess");
-const loadUserFail = createAction<{ payload: any }>("LoadUserFail");
-const updateUserInfoFailed = createAction<{ payload: any }>("updateUserInfoFailed");
-const updateUserAddressFailed = createAction<{ payload: any }>("updateUserAddressFailed");
 const clearErrors = createAction("clearErrors");
+const loadUserRequest = createAction("LoadUserRequest");
+const loadUserFail = createAction<{ payload: any }>("LoadUserFail");
+const updateUserInfoRequest = createAction("updateUserInfoRequest");
+const deleteUserAddressRequest = createAction("deleteUserAddressRequest");
+const deleteUserAddressSuccess = createAction<{ successMessage: any }>("deleteUserAddressSuccess");
+const loadUserSuccess = createAction<{ payload: any }>("LoadUserSuccess");
+const updateUserAddressRequest = createAction("updateUserAddressRequest");
+const updateUserInfoFailed = createAction<{ payload: any }>("updateUserInfoFailed");
+const updateUserInfoSuccess = createAction<{ payload: any }>("updateUserInfoSuccess");
+const updateUserAddressFailed = createAction<{ payload: any }>("updateUserAddressFailed");
+const deleteUserAddressFailed = createAction<{ payload: any, user: any }>("deleteUserAddressFailed");
+const updateUserAddressSuccess = createAction<{ payload: any, user: any, successMessage: any }>("updateUserAddressSuccess");
 
 interface UserState {
-  isAuthenticated: boolean;
-  loading?: boolean;
   user?: any;
   error?: any;
+  loading?: boolean;
+  addressLoading?: any;
+  successMessage?: any;
+  isAuthenticated?: boolean;
 }
 
 const initialState: UserState = {
@@ -54,14 +59,29 @@ export const userReducer = createReducer(initialState, (builder) => {
 
     // update user address
     .addCase(updateUserAddressRequest, (state) => {
-      state.loading = true
+      state.addressLoading = true
     })
-    .addCase(updateUserAddressSucess, (state, action) => {
-      state.loading = false;
-      state.user = action.payload;
+    .addCase(updateUserAddressSuccess, (state, action) => {
+      state.addressLoading = false;
+      state.successMessage = action.payload.successMessage;
+      state.user = action.payload.user;
     })
     .addCase(updateUserAddressFailed, (state, action) => {
-      state.loading = false;
+      state.addressLoading = false;
+      state.error = action.payload;
+    })
+
+    // delete user address
+    .addCase(deleteUserAddressRequest, (state) => {
+      state.addressLoading = true;
+    })
+    .addCase(deleteUserAddressSuccess, (state, action) => {
+      state.addressLoading = false;
+      state.successMessage = action?.payload?.successMessage;
+      state.user = action.payload;
+    })
+    .addCase(deleteUserAddressFailed, (state, action) => {
+      state.addressLoading = false;
       state.error = action.payload;
     })
 

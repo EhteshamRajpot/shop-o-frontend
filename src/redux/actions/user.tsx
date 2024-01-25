@@ -99,7 +99,7 @@ export const updatUserAddress =
                 );
 
                 dispatch({
-                    type: "updateUserAddressSucess",
+                    type: "updateUserAddressSuccess",
                     payload: {
                         successMessage: "User address updated succesfully!",
                         user: data.user,
@@ -112,3 +112,29 @@ export const updatUserAddress =
                 });
             }
         };
+
+export const deleteUserAddress = (id: any) => async (dispatch: any) => {
+    try {
+        dispatch({
+            type: "deleteUserAddressRequest",
+        });
+
+        const { data } = await axios.delete(
+            `${server}/user/delete-user-address/${id}`,
+            { withCredentials: true }
+        );
+
+        dispatch({
+            type: "deleteUserAddressSuccess",
+            payload: {
+                successMessage: "User deleted successfully!",
+                user: data.user,
+            },
+        });
+    } catch (error: any) {
+        dispatch({
+            type: "deleteUserAddressFailed",
+            payload: error.response.data.message,
+        });
+    }
+};

@@ -17,9 +17,10 @@ interface ProfileContentProps {
     active: any,
     updatUserAddress: any,
     updateUserInformation: any
+    deleteUserAddress: any
 }
-const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInformation, updatUserAddress }) => {
-    const { user, error } = useSelector((state: any) => state.user)
+const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInformation, updatUserAddress, deleteUserAddress }) => {
+    const { user, error, successMessage } = useSelector((state: any) => state.user)
 
     const [name, setName] = useState(user && user.name);
     const [email, setEmail] = useState(user && user.email);
@@ -32,8 +33,13 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
     useEffect(() => {
         if (error) {
             toast.error(error)
+            dispatch({ type: "clearErrors" })
         }
-    }, [])
+        if (successMessage) {
+            toast.success(successMessage)
+            dispatch({ type: "clearMessages" });
+        }
+    }, [error, successMessage])
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -188,7 +194,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
             {
                 active === 7 && (
                     <div>
-                        <Address updatUserAddress={updatUserAddress} />
+                        <Address updatUserAddress={updatUserAddress} deleteUserAddress={deleteUserAddress} />
                     </div>
                 )
             }
@@ -546,8 +552,9 @@ const PaymentMethod = () => {
 
 interface AddressProps {
     updatUserAddress: any
+    deleteUserAddress: any
 }
-const Address: React.FC<AddressProps> = ({ updatUserAddress }) => {
+const Address: React.FC<AddressProps> = ({ updatUserAddress, deleteUserAddress }) => {
 
     const [open, setOpen] = useState(false);
     const [country, setCountry] = useState("");
@@ -595,6 +602,11 @@ const Address: React.FC<AddressProps> = ({ updatUserAddress }) => {
             setZipCode("");
             setAddressType("");
         }
+    };
+
+    const handleDelete = (item: any) => {
+        const id = item._id;
+        dispatch(deleteUserAddress(id));
     };
 
     return (
@@ -732,26 +744,54 @@ const Address: React.FC<AddressProps> = ({ updatUserAddress }) => {
                     </div>
                 )
             }
-            <div className='flex w-full items-center justify-between'>
-                <h1 className='text-[25px] font-[600] text-[#000000ba] pb-2'>My Address</h1>
-                <div className={`${styles.button} !rounded-md`} onClick={() => setOpen(true)}>
-                    <span className='text-[#fff]'>Add New</span>
+            <div className="flex w-full items-center justify-between">
+                <h1 className="text-[25px] font-[600] text-[#000000ba] pb-2">
+                    My Addresses
+                </h1>
+                <div
+                    className={`${styles.button} !rounded-md`}
+                    onClick={() => setOpen(true)}
+                >
+                    <span className="text-[#fff]">Add New</span>
                 </div>
             </div>
             <br />
-            <div className='w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10'>
-                <div className='flex items-center'>
-                    <h5 className='pl-5 font-[600]'>Default</h5>
-                </div>
-                <div className='pl-8 flex items-center'>
-                    <h6>Ahmad Nagar, Street# 3 House No. 12, Johar Town, Lahore</h6>
-                </div>
-                <div className='min-w-[10%] flex items-center justify-between pl-8'>
-                    <AiOutlineDelete size={25} className='cursor-pointer' />
-                </div>
-            </div>
+            {user &&
+                user?.addresses?.map((item: any, index: any) => (
+                    <div
+                        className="w-full bg-white h-min 800px:h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10 mb-5"
+                        key={index}
+                    >
+                        <div className="flex items-center">
+                            <h5 className="pl-5 font-[600]">{item.addressType}</h5>
+                        </div>
+                        <div className="pl-8 flex items-center">
+                            <h6 className="text-[12px] 800px:text-[unset]">
+                                {item.address1} {item.address2}
+                            </h6>
+                        </div>
+                        <div className="pl-8 flex items-center">
+                            <h6 className="text-[12px] 800px:text-[unset]">
+                                {user && user.phoneNumber}
+                            </h6>
+                        </div>
+                        <div className="min-w-[10%] flex items-center justify-between pl-8">
+                            <AiOutlineDelete
+                                size={25}
+                                className="cursor-pointer"
+                                onClick={() => handleDelete(item)}
+                            />
+                        </div>
+                    </div>
+                ))}
+
+            {user && user?.addresses?.length === 0 && (
+                <h5 className="text-center pt-8 text-[18px]">
+                    You not have any saved address!
+                </h5>
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default ProfileContent
