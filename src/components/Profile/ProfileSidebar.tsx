@@ -24,7 +24,7 @@ const ProfileSidebar: React.FC<ProfileSideBarProps> = ({ active, setActive }) =>
     const navigate = useNavigate();
 
     const logoutHandler = () => {
-        axios.get(`${server}/user/logout`, {withCredentials: true}).then((res) => {
+        axios.get(`${server}/user/logout`, { withCredentials: true }).then((res) => {
             toast.success(res.data.message)
             navigate("/login")
             window.location.reload()
@@ -108,6 +108,18 @@ const ProfileSidebar: React.FC<ProfileSideBarProps> = ({ active, setActive }) =>
                         } 800px:block hidden`}
                 >
                     Payment Methods
+                </span>
+            </div>
+            <div
+                className="flex items-center cursor-pointer w-full mb-8"
+                onClick={() => setActive(8)}
+            >
+                <RiLockPasswordLine size={20} color={active === 8 ? "red" : ""} />
+                <span
+                    className={`pl-3 ${active === 6 ? "text-[red]" : ""
+                        } 800px:block hidden`}
+                >
+                    Change Password
                 </span>
             </div>
 
