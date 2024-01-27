@@ -6,11 +6,10 @@ import { RxPerson } from 'react-icons/rx'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import {
-    MdOutlineAdminPanelSettings,
-    MdOutlinePassword,
     MdOutlineTrackChanges,
 } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
+import { MdPayment } from "react-icons/md";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { server } from '../../server';
@@ -102,7 +101,7 @@ const ProfileSidebar: React.FC<ProfileSideBarProps> = ({ active, setActive }) =>
                 className="flex items-center cursor-pointer w-full mb-8"
                 onClick={() => setActive(6)}
             >
-                <RiLockPasswordLine size={20} color={active === 6 ? "red" : ""} />
+                <MdPayment size={20} color={active === 6 ? "red" : ""} />
                 <span
                     className={`pl-3 ${active === 6 ? "text-[red]" : ""
                         } 800px:block hidden`}

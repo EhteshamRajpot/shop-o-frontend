@@ -13,6 +13,7 @@ import {
   SignupPage,
   ProfilePage,
   ProductsPage,
+  CheckoutPage,
   ShopLoginPage,
   ActivationPage,
   ShopCreatePage,
@@ -161,6 +162,13 @@ function App() {
     {
       path: "/shop/preview/:id",
       element: <ShopPreviewPage />
+    },
+    {
+      path: "/checkout",
+      element:
+        <ProtectedRoutes>
+          <CheckoutPage />
+        </ProtectedRoutes>
     },
 
 

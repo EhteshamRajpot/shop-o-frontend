@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage.tsx";
 import EventsPage from "../pages/EventsPage.tsx";
 import SignupPage from "../pages/SignupPage.tsx";
 import ProfilePage from "../pages/ProfilePage.tsx";
+import CheckoutPage from "../pages/CheckoutPage.tsx";
 import ProductsPage from "../pages/ProductsPage.tsx";
 import ShopLoginPage from "../pages/ShopLoginPage.tsx";
 import ShopCreatePage from "../pages/ShopCreatePage.tsx";
@@ -13,17 +14,18 @@ import ProductDetailsPage from "../pages/ProductDetailsPage.tsx";
 import SellerActivationPage from "../pages/SellerActivationPage.tsx";
 
 export {
-    FAQPage, 
+    FAQPage,
     HomePage,
     LoginPage,
-    EventsPage, 
+    EventsPage,
     SignupPage,
-    ProfilePage, 
+    ProfilePage,
+    CheckoutPage,
     ProductsPage,
     ShopLoginPage,
     ActivationPage,
     ShopCreatePage,
-    BestSellingPage, 
-    ProductDetailsPage, 
+    BestSellingPage,
+    ProductDetailsPage,
     SellerActivationPage,
 }
