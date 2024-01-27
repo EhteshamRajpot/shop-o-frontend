@@ -66,7 +66,7 @@ const Checkout = () => {
         e.preventDefault();
         const name = couponCode;
 
-        await axios.get(`${server}/coupon/get-coupon-value/${name}`).then((res) => {
+        await axios.get(`${server}/coupoun/get-coupon-value/${name}`).then((res) => {
             const shopId = res.data.couponCode?.shopId;
             const couponCodeValue = res.data.couponCode?.value;
             if (res.data.couponCode !== null) {
