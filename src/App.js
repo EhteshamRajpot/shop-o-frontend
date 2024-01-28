@@ -41,10 +41,18 @@ import ProtectedRoutes from "./protectedRoutes/ProtectedRoutes";
 import SellerProtectedRoutes from "./protectedRoutes/SellerProtectedRoutes";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
+import { server } from "./server";
 
 function App() {
+  const [stripeApiKey, setStripeApiKey] = useState("");
+
+  async function getStripeApiKey(){
+    const {data} = await axios.get(`${server}/payment/stripeapikey`)
+    setStripeApiKey(data?.stripeApiKey)
+  }
 
   useEffect(() => {
+    getStripeApiKey();
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllEvents());
