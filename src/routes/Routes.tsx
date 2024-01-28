@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage.tsx";
 import EventsPage from "../pages/EventsPage.tsx";
 import SignupPage from "../pages/SignupPage.tsx";
 import ProfilePage from "../pages/ProfilePage.tsx";
+import PaymentPage  from "../pages/PaymentPage.tsx";
 import CheckoutPage from "../pages/CheckoutPage.tsx";
 import ProductsPage from "../pages/ProductsPage.tsx";
 import ShopLoginPage from "../pages/ShopLoginPage.tsx";
@@ -20,6 +21,7 @@ export {
     EventsPage,
     SignupPage,
     ProfilePage,
+    PaymentPage,
     CheckoutPage,
     ProductsPage,
     ShopLoginPage,

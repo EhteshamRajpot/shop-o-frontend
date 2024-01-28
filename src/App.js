@@ -12,6 +12,7 @@ import {
   EventsPage,
   SignupPage,
   ProfilePage,
+  PaymentPage,
   ProductsPage,
   CheckoutPage,
   ShopLoginPage,
@@ -168,6 +169,13 @@ function App() {
       element:
         <ProtectedRoutes>
           <CheckoutPage />
+        </ProtectedRoutes>
+    },
+    {
+      path: "/payment",
+      element:
+        <ProtectedRoutes>
+          <PaymentPage  />
         </ProtectedRoutes>
     },
 
