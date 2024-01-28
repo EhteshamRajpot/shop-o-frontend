@@ -42,13 +42,16 @@ import SellerProtectedRoutes from "./protectedRoutes/SellerProtectedRoutes";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
 import { server } from "./server";
+import axios from "axios";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
-  const [stripeApiKey, setStripeApiKey] = useState("");
+  const [stripeApiKey, setStripeApiKey] = React.useState("");
 
-  async function getStripeApiKey(){
-    const {data} = await axios.get(`${server}/payment/stripeapikey`)
-    setStripeApiKey(data?.stripeApiKey)
+  async function getStripeApiKey() {
+    const { data } = await axios.get(`${server}/payment/stripeapikey`)
+    setStripeApiKey(data?.stripeApikey)
   }
 
   useEffect(() => {
@@ -60,6 +63,17 @@ function App() {
   }, [])
 
   const router = createBrowserRouter([
+    stripeApiKey && {
+      path: "/payment",
+      element: (
+        <Elements stripe={loadStripe(stripeApiKey)}>
+          <ProtectedRoutes>
+            <PaymentPage />
+          </ProtectedRoutes>
+        </Elements>
+      ),
+    },
+
     {
       path: "/",
       element: <HomePage />,
@@ -178,14 +192,7 @@ function App() {
         <ProtectedRoutes>
           <CheckoutPage />
         </ProtectedRoutes>
-    },
-    {
-      path: "/payment",
-      element:
-        <ProtectedRoutes>
-          <PaymentPage  />
-        </ProtectedRoutes>
-    },
+    }
 
 
   ]);

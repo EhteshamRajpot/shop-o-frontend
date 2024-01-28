@@ -18,6 +18,11 @@ import { RxCross1 } from "react-icons/rx";
 
 const Payment = () => {
     const [orderData, setOrderData] = useState([]);
+    const [open, setOpen] = useState(false);
+    const { user } = useSelector((state: any) => state.user);
+    const navigate = useNavigate();
+    const stripe = useStripe();
+    const elements = useElements();
 
     useEffect(() => {
         const storedOrder = localStorage.getItem("latestOrder");
@@ -29,18 +34,45 @@ const Payment = () => {
         }
     }, []);
 
+    const createOrder = (data: any, actions: any) => {
+
+    }
+
+    const onApprove = async (data: any, actions: any) => {
+        console.log("Data")
+    }
+
+    const paypalPaymentHandler = (async (paymentInfo: any) => (
+        console.log("data", paymentInfo)
+    ));
+
+    const paymentData = {
+        amount: Math.round(orderData?.totalPrice * 100)
+    };
+
+    const paymentHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+    }
+
+    const cashOnDeliveryHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+
+    }
+
+
+
     return (
         <div className="w-full flex flex-col items-center py-8">
             <div className="w-[90%] 1000px:w-[70%] block 800px:flex">
                 <div className="w-full 800px:w-[65%]">
                     <PaymentInfo
-                    // user={user}
-                    // open={open}
-                    // setOpen={setOpen}
-                    // onApprove={onApprove}
-                    // createOrder={createOrder}
-                    // paymentHandler={paymentHandler}
-                    // cashOnDeliveryHandler={cashOnDeliveryHandler}
+                        user={user}
+                        open={open}
+                        setOpen={setOpen}
+                        onApprove={onApprove}
+                        createOrder={createOrder}
+                        paymentHandler={paymentHandler}
+                        cashOnDeliveryHandler={cashOnDeliveryHandler}
                     />
                 </div>
                 <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
@@ -54,43 +86,24 @@ const Payment = () => {
 };
 
 interface PaymentInfoProps {
-    // user: any,
-    // open: any,
-    // setOpen: any,
-    // onApprove: any,
-    // createOrder: any,
-    // paymentHandler: any,
-    // cashOnDeliveryHandler: any,
+    user: any,
+    open: any,
+    setOpen: any,
+    onApprove: any,
+    createOrder: any,
+    paymentHandler: any,
+    cashOnDeliveryHandler: any,
 }
 const PaymentInfo: React.FC<PaymentInfoProps> = ({
-    // user,
-    // open,
-    // setOpen,
-    // onApprove,
-    // createOrder,
-    // paymentHandler,
-    // cashOnDeliveryHandler,
+    user,
+    open,
+    setOpen,
+    onApprove,
+    createOrder,
+    paymentHandler,
+    cashOnDeliveryHandler,
 }) => {
     const [select, setSelect] = useState(1);
-    const [open, setOpen] = useState(false);
-
-    const paymentHandler = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Add your payment handling logic here
-    };
-
-    const onApprove = async (data: any, actions: any) => {
-        // Add your PayPal onApprove logic here
-    };
-
-    const createOrder = (data: any, actions: any) => {
-        // Add your PayPal createOrder logic here
-    };
-
-    const cashOnDeliveryHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Add your Cash on Delivery handling logic here
-    };
 
     return (
         <>
@@ -120,16 +133,16 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                         <label className="block pb-2">Name On Card</label>
                                         <input
                                             required
-                                            // placeholder={user && user.name}
-                                            placeholder={"Muhammad Ehtesham"}
+                                            placeholder={user && user.name}
+                                            // placeholder={"Muhammad Ehtesham"}
                                             className={`${styles.input} !w-[95%] text-[#444]`}
-                                            // value={user && user.name}
-                                            value={"Muhammad Ehtesham"}
+                                            value={user && user.name}
+                                            // value={"Muhammad Ehtesham"}
                                         />
                                     </div>
                                     <div className="w-[50%]">
                                         <label className="block pb-2">Exp Date</label>
-                                        {/* <CardExpiryElement
+                                        <CardExpiryElement
                                             className={`${styles.input}`}
                                             options={{
                                                 style: {
@@ -147,14 +160,14 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                                     },
                                                 },
                                             }}
-                                        /> */}
+                                        />
                                     </div>
                                 </div>
 
                                 <div className="w-full flex pb-3">
                                     <div className="w-[50%]">
                                         <label className="block pb-2">Card Number</label>
-                                        {/* <CardNumberElement
+                                        <CardNumberElement
                                             className={`${styles.input} !h-[35px] !w-[95%]`}
                                             options={{
                                                 style: {
@@ -172,11 +185,11 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                                     },
                                                 },
                                             }}
-                                        /> */}
+                                        />
                                     </div>
                                     <div className="w-[50%]">
                                         <label className="block pb-2">CVV</label>
-                                        {/* <CardCvcElement
+                                        <CardCvcElement
                                             className={`${styles.input} !h-[35px]`}
                                             options={{
                                                 style: {
@@ -194,7 +207,7 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                                     },
                                                 },
                                             }}
-                                        /> */}
+                                        />
                                     </div>
                                 </div>
                                 <input
@@ -301,7 +314,7 @@ interface CartDataProps {
     orderData: any
 }
 const CartData: React.FC<CartDataProps> = ({ orderData }) => {
-// const CartData = () => {
+    // const CartData = () => {
     // const shipping = orderData?.shipping?.toFixed(2);
     return (
         <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
