@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import "./App.css";
 import {
   RouterProvider,
@@ -48,15 +48,15 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
-  const [stripeApiKey, setStripeApiKey] = React.useState("");
+  const [stripeApikey, setStripeApiKey] = useState("");
 
-  async function getStripeApiKey() {
-    const { data } = await axios.get(`${server}/payment/stripeapikey`)
-    setStripeApiKey(data?.stripeApikey)
+  async function getStripeApikey() {
+    const { data } = await axios.get(`${server}/payment/stripeapikey`);
+    setStripeApiKey(data.stripeApikey);
   }
 
   useEffect(() => {
-    getStripeApiKey();
+    getStripeApikey();
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllEvents());
@@ -64,10 +64,10 @@ function App() {
   }, [])
 
   const router = createBrowserRouter([
-    stripeApiKey && {
+    stripeApikey  && {
       path: "/payment",
       element: (
-        <Elements stripe={loadStripe(stripeApiKey)}>
+        <Elements stripe={loadStripe(stripeApikey )}>
           <ProtectedRoutes>
             <PaymentPage />
           </ProtectedRoutes>
