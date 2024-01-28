@@ -19,6 +19,7 @@ import {
   ActivationPage,
   ShopCreatePage,
   BestSellingPage,
+  OrderSuccessPage,
   ProductDetailsPage,
   SellerActivationPage,
 } from "./routes/Routes";
@@ -192,6 +193,10 @@ function App() {
         <ProtectedRoutes>
           <CheckoutPage />
         </ProtectedRoutes>
+    },
+    {
+      path: "/order/success",
+      element: <CheckoutPage />
     }
 
 

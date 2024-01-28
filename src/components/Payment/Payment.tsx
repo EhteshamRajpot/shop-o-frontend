@@ -16,8 +16,24 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import { RxCross1 } from "react-icons/rx";
 
-const Payment = () => {
-    const [orderData, setOrderData] = useState([]);
+interface OrderData {
+    cart: any; // Replace 'any' with the actual type for cart
+    shippingAddress: any; // Replace 'any' with the actual type for shippingAddress
+    subTotalPrice: any; // Replace 'any' with the actual type for subTotalPrice
+    shipping: any; // Replace 'any' with the actual type for shipping
+    discountPrice: any; // Replace 'any' with the actual type for discountPrice
+    totalPrice: any; // Replace 'any' with the actual type for totalPrice
+}
+
+const Payment: React.FC = () => {
+    const [orderData, setOrderData] = useState<OrderData>({
+        cart: null,
+        shippingAddress: null,
+        subTotalPrice: null,
+        shipping: null,
+        discountPrice: null,
+        totalPrice: null,
+    });
     const [open, setOpen] = useState(false);
     const { user } = useSelector((state: any) => state.user);
     const navigate = useNavigate();
@@ -38,6 +54,19 @@ const Payment = () => {
 
     }
 
+    interface orderProps {
+        cart: any[]
+        shippingAddress: any
+        totalPrice: any
+        user?: any
+    }
+    const order: orderProps = {
+        cart: orderData?.cart,
+        shippingAddress: orderData?.shippingAddress,
+        user: user && user,
+        totalPrice: orderData?.totalPrice,
+    };
+
     const onApprove = async (data: any, actions: any) => {
         console.log("Data")
     }
@@ -50,9 +79,57 @@ const Payment = () => {
         amount: Math.round(orderData?.totalPrice * 100)
     };
 
-    const paymentHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
-    }
+
+    const paymentHandler = async (e: React.FormEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+
+            const { data } = await axios.post(
+                `${server}/payment/process`,
+                paymentData,
+                config
+            );
+
+            const client_secret = data.client_secret;
+
+            if (!stripe || !elements) return;
+            const result = await stripe.confirmCardPayment(client_secret, {
+                payment_method: {
+                    card: elements.getElement(CardNumberElement),
+                },
+            });
+
+            if (result.error) {
+                toast.error(result.error.message);
+            } else {
+                if (result.paymentIntent.status === "succeeded") {
+                    order.paymnentInfo = {
+                        id: result.paymentIntent.id,
+                        status: result.paymentIntent.status,
+                        type: "Credit Card",
+                    };
+
+                    await axios
+                        .post(`${server}/order/create-order`, order, config)
+                        .then((res) => {
+                            setOpen(false);
+                            navigate("/order/success");
+                            toast.success("Order successful!");
+                            localStorage.setItem("cartItems", JSON.stringify([]));
+                            localStorage.setItem("latestOrder", JSON.stringify([]));
+                            window.location.reload();
+                        });
+                }
+            }
+        } catch (error: any) {
+            toast.error(error);
+        }
+    };
 
     const cashOnDeliveryHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
@@ -137,7 +214,7 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                             // placeholder={"Muhammad Ehtesham"}
                                             className={`${styles.input} !w-[95%] text-[#444]`}
                                             value={user && user.name}
-                                            // value={"Muhammad Ehtesham"}
+                                        // value={"Muhammad Ehtesham"}
                                         />
                                     </div>
                                     <div className="w-[50%]">
