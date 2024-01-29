@@ -21,6 +21,7 @@ interface HeaderProps {
 }
 const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
     const { isAuthenticated, user, loading } = useSelector((state: any) => state.user);
+    const { isSeller } = useSelector((state: any) => state.seller);
     const { cart } = useSelector((state: any) => state.cart)
     const { wishlist } = useSelector((state: any) => state.wishlist)
     const { allProducts } = useSelector((state: any) => state.products);
@@ -95,8 +96,9 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                 </div>
                                 <div className={`${styles.button}`}>
                                     <Link to="/shop-create">
-                                        <h1 className='text-[#fff] flex items-center'>
-                                            Become Seller <IoIosArrowForward className="ml-1" />
+                                        <h1 className="text-[#fff] flex items-center">
+                                            {isSeller ? "Go Dashboard" : "Become Seller"}{" "}
+                                            <IoIosArrowForward className="ml-1" />
                                         </h1>
                                     </Link>
                                 </div>

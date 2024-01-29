@@ -16,10 +16,10 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
     const { orders }: { orders: any[] } = useSelector((state: any) => state.order);
     const { user }: { user: any } = useSelector((state: any) => state.user);
     const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
     const [comment, setComment] = useState("");
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [rating, setRating] = useState(1);
+    const [selectedItem, setSelectedItem] = useState<any | null>(null);
+    const [rating, setRating] = useState<any>(1);
 
     const { id } = useParams();
 
@@ -103,7 +103,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
                             </div>
                             {!item.isReviewed && data?.status === "Delivered" ? <div
                                 className={`${styles.button} text-[#fff]`}
-                                onClick={() => setOpen(true) || setSelectedItem(item)}
+                                onClick={() => { setOpen(true); setSelectedItem(item) }}
                             >
                                 Write a review
                             </div> : (
@@ -181,8 +181,8 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
                             <textarea
                                 name="comment"
                                 id=""
-                                cols="20"
-                                rows="5"
+                                cols={20}
+                                rows={5}
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
                                 placeholder="How was your product? write your expresion about it!"
