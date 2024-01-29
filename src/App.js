@@ -20,6 +20,7 @@ import {
   ShopCreatePage,
   BestSellingPage,
   OrderSuccessPage,
+  OrderDetailsPage,
   ProductDetailsPage,
   SellerActivationPage,
 } from "./routes/Routes";
@@ -125,6 +126,13 @@ function App() {
       element:
         <ProtectedRoutes>
           <ProfilePage />
+        </ProtectedRoutes>,
+    },
+    {
+      path: "/user/order/:id",
+      element:
+        <ProtectedRoutes>
+          <OrderDetailsPage />
         </ProtectedRoutes>,
     },
     // Shop Routes

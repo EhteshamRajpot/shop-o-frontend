@@ -12,6 +12,7 @@ import ShopCreatePage from "../pages/ShopCreatePage.tsx";
 import ActivationPage from "../pages/ActivationPage.tsx";
 import BestSellingPage from "../pages/BestSellingPage.tsx";
 import OrderSuccessPage  from "../pages/OrderSuccessPage.tsx";
+import OrderDetailsPage  from "../pages/OrderDetailsPage.tsx";
 import ProductDetailsPage from "../pages/ProductDetailsPage.tsx";
 import SellerActivationPage from "../pages/SellerActivationPage.tsx";
 
@@ -30,6 +31,7 @@ export {
     ShopCreatePage,
     BestSellingPage,
     OrderSuccessPage,
+    OrderDetailsPage,
     ProductDetailsPage,
     SellerActivationPage,
 }
