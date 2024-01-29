@@ -130,7 +130,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
                         <br />
                         <div className="w-full flex">
                             <img
-                                src={`${backend_url}${selectedItem?.images[0]}`}
+                                src={`${backend_url}/${selectedItem?.images[0]}`}
                                 alt=""
                                 className="w-[80px] h-[80px]"
                             />
