@@ -7,8 +7,11 @@ interface TimeLeft {
     seconds: number;
     data: any[];
 }
+interface CountDownProps {
+    data: any
+}
 
-const CountDown: React.FC = ({data}) => {
+const CountDown: React.FC<CountDownProps> = ({ data }) => {
     const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
     useEffect(() => {

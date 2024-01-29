@@ -51,7 +51,25 @@ const Payment: React.FC = () => {
     }, []);
 
     const createOrder = (data: any, actions: any) => {
-
+        return actions.order
+            .create({
+                purchase_units: [
+                    {
+                        description: "Sunflower",
+                        amount: {
+                            currency_code: "USD",
+                            value: orderData?.totalPrice,
+                        },
+                    },
+                ],
+                // not needed if a shipping address is actually needed
+                application_context: {
+                    shipping_preference: "NO_SHIPPING",
+                },
+            })
+            .then((orderID: any) => {
+                return orderID;
+            });
     }
 
     interface orderProps {
@@ -68,12 +86,41 @@ const Payment: React.FC = () => {
     };
 
     const onApprove = async (data: any, actions: any) => {
-        console.log("Data")
+        return actions.order.capture().then(function (details: any) {
+            const { payer } = details;
+
+            let paymentInfo = payer;
+
+            if (paymentInfo !== undefined) {
+                paypalPaymentHandler(paymentInfo);
+            }
+        });
     }
 
-    const paypalPaymentHandler = (async (paymentInfo: any) => (
-        console.log("data", paymentInfo)
-    ));
+    const paypalPaymentHandler = async (paymentInfo: any) => {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+
+        order.paymentInfo = {
+            id: paymentInfo.payer_id,
+            status: "succeeded",
+            type: "Paypal",
+        };
+
+        await axios
+            .post(`${server}/order/create-order`, order, config)
+            .then((res) => {
+                setOpen(false);
+                navigate("/order/success");
+                toast.success("Order successful!");
+                localStorage.setItem("cartItems", JSON.stringify([]));
+                localStorage.setItem("latestOrder", JSON.stringify([]));
+                window.location.reload();
+            });
+    };
 
     const paymentData = {
         amount: Math.round(orderData?.totalPrice * 100)
@@ -131,10 +178,30 @@ const Payment: React.FC = () => {
         }
     };
 
-    const cashOnDeliveryHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cashOnDeliveryHandler = async (e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault()
 
-    }
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+
+        order.paymentInfo = {
+            type: "Cash On Delivery",
+        };
+
+        await axios
+            .post(`${server}/order/create-order`, order, config)
+            .then((res) => {
+                setOpen(false);
+                navigate("/order/success");
+                toast.success("Order successful!");
+                localStorage.setItem("cartItems", JSON.stringify([]));
+                localStorage.setItem("latestOrder", JSON.stringify([]));
+                window.location.reload();
+            });
+    };
 
 
 

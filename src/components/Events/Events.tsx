@@ -7,8 +7,9 @@ import { getAllEvents } from '../../redux/actions/event.tsx';
 
 interface EventsProps {
     getAllEvents: any
+    addTocart: any
 }
-const Events:React.FC<EventsProps> = ({getAllEvents}) => {
+const Events: React.FC<EventsProps> = ({ getAllEvents, addTocart }) => {
     const { allEvents, isLoading } = useSelector((state: any) => state.events)
     const dispatch = useDispatch()
     useEffect(() => {
@@ -23,7 +24,7 @@ const Events:React.FC<EventsProps> = ({getAllEvents}) => {
                             <h1>Popular Events</h1>
                         </div>
                         <div className="w-full grid">
-                            <EventCard active={true} data={allEvents && allEvents[0]} />
+                            <EventCard active={true} data={allEvents && allEvents[0]} addTocart={addTocart} />
                         </div>
                     </div>
                 )

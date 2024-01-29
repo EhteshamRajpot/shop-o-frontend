@@ -2,12 +2,33 @@ import React from 'react';
 import styles from '../../styles/styles';
 import CountDown from "./CountDown.tsx";
 import { backend_url } from '../../server.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
-interface EventCardProps{
+interface EventCardProps {
     active: boolean;
-    data: any
+    data: any;
+    addTocart: any
 }
-const EventCard:React.FC<EventCardProps> = ({active, data}) => {
+const EventCard: React.FC<EventCardProps> = ({ active, data, addTocart }) => {
+    const { cart } = useSelector((state: any) => state.cart);
+    const dispatch = useDispatch();
+
+    const addToCartHandler = (data: any) => {
+        const isItemExists = cart && cart.find((i: any) => i._id === data._id);
+        if (isItemExists) {
+            toast.error("Item already in cart!");
+        } else {
+            if (data.stock < 1) {
+                toast.error("Product stock limited!");
+            } else {
+                const cartData = { ...data, qty: 1 };
+                dispatch(addTocart(cartData));
+                toast.success("Item added to cart successfully!");
+            }
+        }
+    }
 
     return (
         <div className={`w-full block bg-white rounded-lg ${active ? "unsent" : "mb-12"} lg:flex p-2 mb-12`}>
@@ -17,7 +38,7 @@ const EventCard:React.FC<EventCardProps> = ({active, data}) => {
             <div className='w-full lg:[w-50%] flex flex-col justify-center'>
                 <h2 className={`${styles.productTitle}`}>{data?.name}</h2>
                 <p>
-                  {data?.description}
+                    {data?.description}
                 </p>
                 <div className='flex py-2 justify-between'>
                     <div className='flex'>
@@ -33,6 +54,13 @@ const EventCard:React.FC<EventCardProps> = ({active, data}) => {
                     </span>
                 </div>
                 <CountDown data={data} />
+                <br />
+                <div className="flex items-center">
+                    <Link to={`/product/${data?._id}?isEvent=true`}>
+                        <div className={`${styles.button} text-[#fff]`}>See Details</div>
+                    </Link>
+                    <div className={`${styles.button} text-[#fff] ml-5`} onClick={() => addToCartHandler(data)}>Add to cart</div>
+                </div>
             </div>
         </div>
     )

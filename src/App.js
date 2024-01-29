@@ -196,7 +196,7 @@ function App() {
     },
     {
       path: "/order/success",
-      element: <CheckoutPage />
+      element: <OrderSuccessPage />
     }
 
 

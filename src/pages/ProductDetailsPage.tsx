@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ProductDetails from '../components/Products/ProductDetails.tsx';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { productData } from '../static/data.tsx';
 import SuggestedProduct from "../components/Products/SuggestedProduct.tsx";
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,14 +30,16 @@ interface Product {
     getAllProducts: any
 }
 
-const ProductDetailsPage: React.FC<Product> = ({getAllProducts}) => {
+const ProductDetailsPage: React.FC<Product> = ({ getAllProducts }) => {
     const { allProducts, loading } = useSelector((state: any) => state.products)
-    console.log("Product Data", allProducts)
+    const { allEvents } = useSelector((state: any) => state.events)
     const { id } = useParams();
     const [data, setData] = useState<Product | null>(null);
     const [productsLoaded, setProductsLoaded] = useState(false);
-    // const productName = name?.replace(/-/g, " ");
+    const [searchParams] = useSearchParams();
+    const eventData = searchParams.get("isEvent")
     const dispatch = useDispatch()
+    // const productName = name?.replace(/-/g, " ");
 
 
     useEffect(() => {
@@ -45,12 +47,21 @@ const ProductDetailsPage: React.FC<Product> = ({getAllProducts}) => {
     }, [dispatch]);
 
     useEffect(() => {
+        if (allEvents && allEvents.length > 0) {
+            const eventData = allEvents.find((event: any) => event._id === id);
+            if (eventData) {
+                setData(eventData);
+                return;
+            }
+        }
+
         if (allProducts && allProducts.length > 0) {
-            const product = allProducts.find((i: any) => i?._id === id);
+            const product = allProducts.find((product: any) => product._id === id);
             setData(product || null);
             setProductsLoaded(true);
         }
-    }, [allProducts, data]);
+    }, [allProducts, allEvents, id]);
+
 
     if (!productsLoaded && loading) {
         // You can render a loading indicator here
