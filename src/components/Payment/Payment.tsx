@@ -400,8 +400,8 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                                 onClick={() => setOpen(false)}
                                             />
                                         </div>
-                                        {/* <PayPalScriptProvider
-                                            options={{
+                                        <PayPalScriptProvider
+                                            options={{ 
                                                 "client-id":
                                                     "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
                                             }}
@@ -411,7 +411,7 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
                                                 onApprove={onApprove}
                                                 createOrder={createOrder}
                                             />
-                                        </PayPalScriptProvider> */}
+                                        </PayPalScriptProvider>
                                     </div>
                                 </div>
                             )}
