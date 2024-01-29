@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, MouseEventHandler } from "react";
 import { BsFillBagFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +29,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
 
     const data = orders && orders.find((item: any) => item._id === id);
 
-    const reviewHandler = async (e: any) => {
+    const reviewHandler = async (e: MouseEventHandler<HTMLDivElement>) => {
         await axios
             .put(
                 `${server}/product/create-new-review`,
@@ -130,7 +130,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
                         <br />
                         <div className="w-full flex">
                             <img
-                                src={`${selectedItem?.images[0]?.url}`}
+                                src={`${backend_url}${selectedItem?.images[0]}`}
                                 alt=""
                                 className="w-[80px] h-[80px]"
                             />
