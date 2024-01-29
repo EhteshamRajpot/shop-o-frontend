@@ -51,7 +51,7 @@ export const orderReducer = createReducer(initialState, (builder) => {
         })
         .addCase(getAllOrdersShopSuccess, (state, action) => {
             state.isLoading = false;
-            state.allProducts = action.payload;
+            state.orders = action.payload;
         })
         .addCase(getAllOrdersShopFailed, (state, action) => {
             state.isLoading = false;

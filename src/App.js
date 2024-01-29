@@ -29,10 +29,12 @@ import {
   ShopAllProducts,
   ShopPreviewPage,
   ShopAllEventsPage,
-  ShopDashboardPage,
   ShopCreateProduct,
+  ShopAllOrdersPage,
+  ShopDashboardPage,
   ShopAllCoupounsPage,
   ShopCreateEventsPage,
+  ShopOrderDetailsPage,
 } from "./routes/ShopRoutes";
 
 import { ToastContainer } from "react-toastify";
@@ -156,10 +158,24 @@ function App() {
         </SellerProtectedRoutes>
     },
     {
+      path: "/order/:id",
+      element:
+        <SellerProtectedRoutes>
+          <ShopOrderDetailsPage />
+        </SellerProtectedRoutes>
+    },
+    {
       path: "/dashboard-products",
       element:
         <SellerProtectedRoutes>
           <ShopAllProducts />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/dashboard-orders",
+      element:
+        <SellerProtectedRoutes>
+          <ShopAllOrdersPage />
         </SellerProtectedRoutes>
     },
     {

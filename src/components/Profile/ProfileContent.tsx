@@ -18,8 +18,9 @@ interface ProfileContentProps {
     updatUserAddress: any,
     updateUserInformation: any
     deleteUserAddress: any
+    getAllOrdersOfUser: any
 }
-const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInformation, updatUserAddress, deleteUserAddress }) => {
+const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInformation, updatUserAddress, deleteUserAddress, getAllOrdersOfUser }) => {
     const { user, error, successMessage } = useSelector((state: any) => state.user)
 
     const [name, setName] = useState(user && user.name);
@@ -158,7 +159,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
             {
                 active === 2 && (
                     <div>
-                        <AllOrders />
+                        <AllOrders getAllOrdersOfUser={getAllOrdersOfUser} />
                     </div>
                 )
             }
@@ -211,35 +212,17 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
     )
 }
 
-const AllOrders = () => {
-    const orders = [
-        {
-            _id: "7463hvbfbhfbrtr28820221",
-            orderItems: [
-                {
-                    name: "Iphone 14 pro max"
-                },
+interface AllOrdersProps {
+    getAllOrdersOfUser: any
+}
+const AllOrders: React.FC<AllOrdersProps> = ({getAllOrdersOfUser}) => {
+    const { user } = useSelector((state: any) => state.user);
+    const { orders } = useSelector((state: any) => state.order);
+    const dispatch = useDispatch();
 
-            ],
-            totalPrice: 120,
-            orderStatus: "Processing",
-            cart: ["Iphone 14 pro max"],
-            status: "active"
-        },
-        {
-            _id: "7463hvbfbhfbrtr28820221",
-            orderItems: [
-                {
-                    name: "Iphone 14 pro max"
-                },
-
-            ],
-            totalPrice: 120,
-            orderStatus: "Processing",
-            cart: ["Iphone 14 pro max"],
-            status: "active"
-        },
-    ];
+    useEffect(() => {
+        dispatch(getAllOrdersOfUser(user._id));
+    }, []);
 
 
     const columns = [
@@ -296,7 +279,7 @@ const AllOrders = () => {
     const row: any[] = [];
 
     orders &&
-        orders.forEach((item) => {
+        orders.forEach((item: any) => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,

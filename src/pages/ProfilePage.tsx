@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import styles from '../styles/styles.tsx';
 import { useNavigate } from 'react-router-dom';
 import { deleteUserAddress, updatUserAddress, updateUserInformation } from '../redux/actions/user.tsx';
+import { getAllOrdersOfUser } from '../redux/actions/order.tsx';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -30,11 +31,12 @@ const ProfilePage = () => {
                             <ProfileSideBar active={active} setActive={setActive} />
                         </div>
                         <ProfileContent
-                         active={active} 
-                         updateUserInformation={updateUserInformation} 
-                         updatUserAddress={updatUserAddress} 
-                         deleteUserAddress={deleteUserAddress}
-                         />
+                            active={active}
+                            updatUserAddress={updatUserAddress}
+                            deleteUserAddress={deleteUserAddress}
+                            getAllOrdersOfUser={getAllOrdersOfUser}
+                            updateUserInformation={updateUserInformation}
+                        />
                     </div>
                     <div style={{ marginBottom: "70px" }}></div>
                 </>
