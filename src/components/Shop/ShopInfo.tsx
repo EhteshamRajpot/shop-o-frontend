@@ -51,7 +51,7 @@ const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner, getAllProductsShop, getAll
     };
     return (
         <>
-            `{
+            {
                 isLoading ? (
                     <Loader />
                 ) : (
@@ -105,7 +105,7 @@ const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner, getAllProductsShop, getAll
                         )}
                     </div>
                 )
-            }`
+            }
         </>
     )
 }

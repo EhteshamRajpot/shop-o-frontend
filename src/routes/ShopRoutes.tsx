@@ -1,5 +1,6 @@
 import ShopHomePage from "../pages/Shop/ShopHomePage.tsx";
 import ShopPreviewPage from "../pages/Shop/ShopPreviewPage.tsx";
+import ShopSettingsPage from "../pages/Shop/ShopSettingsPage.tsx";
 import ShopAllOrdersPage from "../pages/Shop/ShopAllOrdersPage.tsx";
 import ShopAllEventsPage from "../pages/Shop/ShopAllEventsPage.tsx";
 import ShopAllProducts from "../pages/Shop/ShopAllProductsPage.tsx";
@@ -14,6 +15,7 @@ export {
     ShopHomePage,
     ShopAllProducts,
     ShopPreviewPage,
+    ShopSettingsPage,
     ShopAllEventsPage,
     ShopCreateProduct,
     ShopDashboardPage,

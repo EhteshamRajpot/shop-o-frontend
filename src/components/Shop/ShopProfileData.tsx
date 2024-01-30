@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
+import Ratings from "../Products/Ratings";
+import { backend_url } from "../../server";
 // import Ratings from "../Products/Ratings";
 
 interface ShopProfileDataProps {
@@ -110,17 +112,17 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
                         allReviews.map((item: any, index: any) => (
                             <div className="w-full flex my-4">
                                 <img
-                                    src={`${item.user.avatar?.url}`}
+                                    src={`${backend_url}${item.user.avatar}`}
                                     className="w-[50px] h-[50px] rounded-full"
                                     alt=""
                                 />
                                 <div className="pl-2">
                                     <div className="flex w-full items-center">
                                         <h1 className="font-[600] pr-2">{item.user.name}</h1>
-                                        {/* <Ratings rating={item.rating} /> */}
+                                        <Ratings rating={item?.rating} />
                                     </div>
                                     <p className="font-[400] text-[#000000a7]">{item?.comment}</p>
-                                    <p className="text-[#000000a7] text-[14px]">{"2days ago"}</p>
+                                    <p className="text-[#000000a7] text-[14px]">{item?.createdAt.slice(0, 10)}</p>
                                 </div>
                             </div>
                         ))}

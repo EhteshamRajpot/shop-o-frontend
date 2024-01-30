@@ -30,6 +30,7 @@ import {
   ShopHomePage,
   ShopAllProducts,
   ShopPreviewPage,
+  ShopSettingsPage,
   ShopAllEventsPage,
   ShopCreateProduct,
   ShopAllOrdersPage,
@@ -158,6 +159,13 @@ function App() {
       element:
         <SellerProtectedRoutes>
           <ShopHomePage />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/settings",
+      element:
+        <SellerProtectedRoutes>
+          <ShopSettingsPage />
         </SellerProtectedRoutes>
     },
     {
