@@ -244,10 +244,28 @@ const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products 
 
             {active === 2 ? (
                 <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Numquam iusto doloribus ex qui?
-                    Dignissimos mollitia corporis iste, maiores, magnam repellat quibusdam reprehenderit
-                    excepturi tempore, sed dolore beatae autem eos officiis!
+                    {data &&
+                        data.reviews.map((item: any, index: any) => (
+                            <div className="w-full flex my-2">
+                                <img
+                                    src={`${backend_url}${item.user.avatar}`}
+                                    alt=""
+                                    className="w-[50px] h-[50px] rounded-full"
+                                />
+                                <div className="pl-2 ">
+                                    <div className="w-full flex items-center">
+                                        <h1 className="font-[500] mr-3">{item.user.name}</h1>
+                                        {/* <Ratings rating={data?.ratings} /> */}
+                                    </div>
+                                    <p>{item.comment}</p>
+                                </div>
+                            </div>
+                        ))}
+
                     <div className="w-full flex justify-center">
+                        {data && data.reviews.length === 0 && (
+                            <h5>No Reviews have for this product!</h5>
+                        )}
                     </div>
                 </div>
             ) : null}
