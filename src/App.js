@@ -34,6 +34,7 @@ import {
   ShopCreateProduct,
   ShopAllOrdersPage,
   ShopDashboardPage,
+  ShopAllRefundsPage,
   ShopAllCoupounsPage,
   ShopCreateEventsPage,
   ShopOrderDetailsPage,
@@ -192,6 +193,13 @@ function App() {
       element:
         <SellerProtectedRoutes>
           <ShopAllOrdersPage />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/dashboard-refunds",
+      element:
+        <SellerProtectedRoutes>
+          <ShopAllRefundsPage />
         </SellerProtectedRoutes>
     },
     {
