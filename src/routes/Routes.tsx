@@ -8,6 +8,7 @@ import PaymentPage  from "../pages/PaymentPage.tsx";
 import CheckoutPage from "../pages/CheckoutPage.tsx";
 import ProductsPage from "../pages/ProductsPage.tsx";
 import ShopLoginPage from "../pages/ShopLoginPage.tsx";
+import TrackOrderPage from "../pages/TrackOrderPage.tsx";
 import ShopCreatePage from "../pages/ShopCreatePage.tsx";
 import ActivationPage from "../pages/ActivationPage.tsx";
 import BestSellingPage from "../pages/BestSellingPage.tsx";
@@ -28,6 +29,7 @@ export {
     ProductsPage,
     ShopLoginPage,
     ActivationPage,
+    TrackOrderPage,
     ShopCreatePage,
     BestSellingPage,
     OrderSuccessPage,

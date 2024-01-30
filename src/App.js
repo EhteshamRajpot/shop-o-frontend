@@ -18,6 +18,7 @@ import {
   ShopLoginPage,
   ActivationPage,
   ShopCreatePage,
+  TrackOrderPage,
   BestSellingPage,
   OrderSuccessPage,
   OrderDetailsPage,
@@ -133,6 +134,13 @@ function App() {
       element:
         <ProtectedRoutes>
           <OrderDetailsPage />
+        </ProtectedRoutes>,
+    },
+    {
+      path: "/user/track/order/:id",
+      element:
+        <ProtectedRoutes>
+          <TrackOrderPage />
         </ProtectedRoutes>,
     },
     // Shop Routes

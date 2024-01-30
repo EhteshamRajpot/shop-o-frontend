@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { RxCross1 } from 'react-icons/rx';
 import { Country, State } from "country-state-city";
+import { getAllOrdersOfUser } from '../../redux/actions/order';
 
 interface ProfileContentProps {
     active: any,
@@ -168,7 +169,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
             {
                 active === 3 && (
                     <div>
-                        <AllRefundOrders />
+                        <AllRefundOrders getAllOrdersOfUser={getAllOrdersOfUser} />
                     </div>
                 )
             }
@@ -177,7 +178,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
             {
                 active === 5 && (
                     <div>
-                        <TrackOrder />
+                        <TrackOrder getAllOrdersOfUser={getAllOrdersOfUser} />
                     </div>
                 )
             }
@@ -215,7 +216,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
 interface AllOrdersProps {
     getAllOrdersOfUser: any
 }
-const AllOrders: React.FC<AllOrdersProps> = ({getAllOrdersOfUser}) => {
+const AllOrders: React.FC<AllOrdersProps> = ({ getAllOrdersOfUser }) => {
     const { user } = useSelector((state: any) => state.user);
     const { orders } = useSelector((state: any) => state.order);
     const dispatch = useDispatch();
@@ -302,35 +303,20 @@ const AllOrders: React.FC<AllOrdersProps> = ({getAllOrdersOfUser}) => {
     )
 }
 
-const AllRefundOrders = () => {
-    const orders = [
-        {
-            _id: "7463hvbfbhfbrtr28820221",
-            orderItems: [
-                {
-                    name: "Iphone 14 pro max"
-                },
+interface AllRefundOrdersProps {
+    getAllOrdersOfUser: any
+}
+const AllRefundOrders: React.FC<AllRefundOrdersProps> = ({ getAllOrdersOfUser }) => {
+    const { user } = useSelector((state: any) => state.user);
+    const { orders } = useSelector((state: any) => state.order);
+    const dispatch = useDispatch();
 
-            ],
-            totalPrice: 120,
-            orderStatus: "Processing",
-            cart: ["Iphone 14 pro max"],
-            status: "active"
-        },
-        {
-            _id: "7463hvbfbhfbrtr28820221",
-            orderItems: [
-                {
-                    name: "Iphone 14 pro max"
-                },
+    useEffect(() => {
+        dispatch(getAllOrdersOfUser(user?._id));
+    }, []);
 
-            ],
-            totalPrice: 120,
-            orderStatus: "Processing",
-            cart: ["Iphone 14 pro max"],
-            status: "active"
-        },
-    ];
+    const eligibleOrders =
+        orders && orders.filter((item: any) => item.status === "Processing refund");
 
     const columns = [
         { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -345,6 +331,11 @@ const AllRefundOrders = () => {
             //         ? "greenColor"
             //         : "redColor";
             // },
+            cellClassName: (params: any) => {
+                const status = params?.data?.status; // Use data instead of getValue
+
+                return status === "Delivered" ? "greenColor" : "redColor";
+            }
         },
         {
             field: "itemsQty",
@@ -374,7 +365,7 @@ const AllRefundOrders = () => {
                     <>
                         <Link to={`/user/order/${params.id}`}>
                             <Button>
-                                <MdTrackChanges size={20} />
+                                <AiOutlineArrowRight size={20} />
                             </Button>
                         </Link>
                     </>
@@ -385,57 +376,41 @@ const AllRefundOrders = () => {
 
     const row: any[] = [];
 
-    orders && orders.forEach((item) => {
-        row.push({
-            id: item._id,
-            itemsQty: item.orderItems.length,
-            total: "US$" + item.totalPrice,
-            status: item.orderStatus,
-        })
-    })
+    eligibleOrders &&
+        eligibleOrders.forEach((item: any) => {
+            row.push({
+                id: item._id,
+                itemsQty: item.cart.length,
+                total: "US$ " + item.totalPrice,
+                status: item.status,
+            });
+        });
 
     return (
-        <div className='pl-8 pt-1'>
+        <div className="pl-8 pt-1">
             <DataGrid
                 rows={row}
                 columns={columns}
                 pageSize={10}
                 autoHeight
-                disableSelectionClick
+                disableSelectionOnClick
             />
         </div>
-    )
+    );
+};
+
+interface TrackOrderProps {
+    getAllOrdersOfUser: any
 }
 
-const TrackOrder = () => {
-    const orders = [
-        {
-            _id: "7463hvbfbhfbrtr28820221",
-            orderItems: [
-                {
-                    name: "Iphone 14 pro max"
-                },
+const TrackOrder: React.FC<TrackOrderProps> = ({ getAllOrdersOfUser }) => {
+    const { user } = useSelector((state: any) => state.user);
+    const { orders } = useSelector((state: any) => state.order);
+    const dispatch = useDispatch();
 
-            ],
-            totalPrice: 120,
-            orderStatus: "Processing",
-            cart: ["Iphone 14 pro max"],
-            status: "active"
-        },
-        {
-            _id: "7463hvbfbhfbrtr28820221",
-            orderItems: [
-                {
-                    name: "Iphone 14 pro max"
-                },
-
-            ],
-            totalPrice: 120,
-            orderStatus: "Processing",
-            cart: ["Iphone 14 pro max"],
-            status: "active"
-        },
-    ];
+    useEffect(() => {
+        dispatch(getAllOrdersOfUser(user._id));
+    }, []);
 
     const columns = [
         { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -450,9 +425,14 @@ const TrackOrder = () => {
             //         ? "greenColor"
             //         : "redColor";
             // },
+            cellClassName: (params: any) => {
+                const status = params?.data?.status; // Use data instead of getValue
+
+                return status === "Delivered" ? "greenColor" : "redColor";
+            }
         },
         {
-            field: "itemQty",
+            field: "itemsQty",
             headerName: "Items Qty",
             type: "number",
             minWidth: 130,
@@ -477,41 +457,42 @@ const TrackOrder = () => {
             renderCell: (params: any) => {
                 return (
                     <>
-                        <Link to={`/user/order/${params.id}`}>
+                        <Link to={`/user/track/order/${params.id}`}>
                             <Button>
-                                <MdOutlineTrackChanges size={20} />
+                                <MdTrackChanges size={20} />
                             </Button>
                         </Link>
                     </>
                 );
             },
         },
-    ]
+    ];
 
+    const row: any[] = [];
 
-    const row: any[] = []
-
-    orders && orders.forEach((item) => {
-        row.push({
-            id: item._id,
-            itemQty: item.orderItems.length,
-            total: "US$" + item.totalPrice,
-            status: item.orderStatus
+    orders &&
+        orders.forEach((item: any) => {
+            row.push({
+                id: item._id,
+                itemsQty: item.cart.length,
+                total: "US$ " + item.totalPrice,
+                status: item.status,
+            });
         });
-    });
 
     return (
-        <div className='pl-8 pt-1'>
+        <div className="pl-8 pt-1">
             <DataGrid
                 rows={row}
                 columns={columns}
                 pageSize={10}
+                disableSelectionOnClick
                 autoHeight
-                disableSelectionClick
             />
         </div>
-    )
-}
+    );
+};
+
 
 const PaymentMethod = () => {
     return (
