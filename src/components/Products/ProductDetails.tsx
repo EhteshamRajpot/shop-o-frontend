@@ -179,7 +179,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                                     </h3>
                                                 </Link>
                                                 <h5 className="pb-3 text-[15px]">
-                                                    (4.7) Ratings
+                                                ({averageRating}/5) Ratings
                                                 </h5>
                                             </div>
                                             <div className={`${styles.button} bg-[#6443d1] mt-4 !rounded !h-11`}>
@@ -192,7 +192,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                 </div>
                             </div>
                             <div>
-                                <ProductDetailsInfo data={data} products={products} />
+                                <ProductDetailsInfo data={data} products={products} averageRating={averageRating} totalReviewsLength={totalReviewsLength} />
                             </div>
                         </div>
                     ) : (null)
@@ -205,8 +205,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
 interface ProductDetailsInfoProps {
     data: any,
     products: any
+    averageRating: any
+    totalReviewsLength: any
 }
-const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products }) => {
+const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products, averageRating, totalReviewsLength }) => {
     const [active, setActive] = useState(1);
 
     return (
@@ -301,7 +303,7 @@ const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products 
                                 <div className="pl-3">
                                     <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                                     <h5 className="pb-2 text-[15px]">
-                                        ({data.shop.ratings}) Ratings
+                                        ({averageRating}/5) Ratings 
                                     </h5>
                                 </div>
                             </div>
@@ -329,7 +331,7 @@ const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products 
                             </h5>
                             <h5 className="font-[600] pt-3">
                                 Total Reviews:{" "}
-                                <span className="font-[500]">3</span>
+                                <span className="font-[500]">{totalReviewsLength}</span>
                             </h5>
                             <Link to="/">
                                 <div

@@ -133,7 +133,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
                                 src={`${backend_url}/${selectedItem?.images[0]}`}
                                 alt=""
                                 className="w-[80px] h-[80px]"
-                            /> 
+                            />
                             <div>
                                 <div className="pl-3 text-[20px]">{selectedItem?.name}</div>
                                 <h4 className="pl-3 text-[20px]">
