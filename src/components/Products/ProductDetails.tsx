@@ -5,6 +5,7 @@ import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } 
 import { backend_url } from '../../server';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import Ratings from './Ratings';
 interface ProductDetailsProps {
     data: any,
     addTocart: any,
@@ -66,6 +67,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
             setCount(count - 1)
         }
     }
+
+    const totalReviewsLength =
+        products &&
+        products.reduce((acc: any, product: any) => acc + product.reviews.length, 0);
+
+    const totalRatings =
+        products &&
+        products.reduce(
+            (acc: any, product: any) =>
+                acc + product.reviews.reduce((sum: any, review: any) => sum + review.rating, 0),
+            0
+        );
+
+    const avg = totalRatings / totalReviewsLength || 0;
+
+    const averageRating = avg.toFixed(2);
+
 
     return (
         <>
@@ -255,7 +273,7 @@ const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products 
                                 <div className="pl-2 ">
                                     <div className="w-full flex items-center">
                                         <h1 className="font-[500] mr-3">{item.user.name}</h1>
-                                        {/* <Ratings rating={data?.ratings} /> */}
+                                        <Ratings rating={data?.ratings} />
                                     </div>
                                     <p>{item.comment}</p>
                                 </div>
