@@ -11,7 +11,7 @@ interface ShopSettingsProps {
 }
 const ShopSettings: React.FC<ShopSettingsProps> = ({ loadSeller }) => {
     const { seller } = useSelector((state: any) => state.seller);
-    const [avatar, setAvatar] = useState();
+    const [avatar, setAvatar] = useState<File>();
     const [name, setName] = useState(seller && seller.name);
     const [description, setDescription] = useState(
         seller && seller.description ? seller.description : ""
@@ -22,32 +22,54 @@ const ShopSettings: React.FC<ShopSettingsProps> = ({ loadSeller }) => {
 
     const dispatch = useDispatch();
 
+
     const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
-        const reader = new FileReader();
+        e.preventDefault()    
+        const fileInput = e.target as HTMLInputElement; // Type casting to HTMLInputElement
+        const file = fileInput.files?.[0];
+        setAvatar(file)
 
-        reader.onload = () => {
-            if (reader.readyState === 2) {
-                setAvatar(reader.result);
-                axios
-                    .put(
-                        `${server}/shop/update-shop-avatar`,
-                        { avatar: reader.result },
-                        {
-                            withCredentials: true,
-                        }
-                    )
-                    .then((res) => {
-                        dispatch(loadSeller());
-                        toast.success("Avatar updated successfully!");
-                    })
-                    .catch((error) => {
-                        toast.error(error.response.data.message);
-                    });
-            }
-        };
+        const formData = new FormData()
 
-        reader.readAsDataURL(e.target.files[0]);
-    };
+        formData.append("image", file)
+
+        await axios.put(`${server}/shop/update-shop-avatar`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data", 
+            }, 
+            withCredentials: true
+        }).then((res) => {
+            dispatch(loadSeller())
+        }).catch((error) => {
+            toast.error(error.response.data.message)
+        })
+    }
+    // const handleImage = async (e) => {
+    //     const reader = new FileReader();
+
+    //     reader.onload = () => {
+    //         if (reader.readyState === 2) {
+    //             setAvatar(reader.result);
+    //             axios
+    //                 .put(
+    //                     `${server}/shop/update-shop-avatar`,
+    //                     { avatar: reader.result },
+    //                     {
+    //                         withCredentials: true,
+    //                     }
+    //                 )
+    //                 .then((res) => {
+    //                     dispatch(loadSeller());
+    //                     toast.success("Avatar updated successfully!");
+    //                 })
+    //                 .catch((error) => {
+    //                     toast.error(error.response.data.message);
+    //                 });
+    //         }
+    //     };
+
+    //     reader.readAsDataURL(e.target.files[0]);
+    // };
 
     const updateHandler = async (e: FormEvent<HTMLInputElement>) => {
         e.preventDefault();

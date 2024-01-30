@@ -28,7 +28,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
     const [email, setEmail] = useState(user && user.email);
     const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
     const [password, setPassword] = useState("");
-    const [avatar, setAvatar] = useState<File | null>(null);
+    const [avatar, setAvatar] = useState<File>();
 
     const dispatch = useDispatch();
 
@@ -48,26 +48,47 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
         dispatch(updateUserInformation(name, email, phoneNumber, password))
     }
 
-    const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
 
-        // e.preventDefault();
-        const file = e.target?.files[0];
-        setAvatar(file);
+    //     // e.preventDefault();
+    //     const file = e.target?.files[0];
+    //     setAvatar(file);
 
-        const formData = new FormData();
-        formData.append("image", e.target?.files[0]);
+    //     const formData = new FormData();
+    //     formData.append("image", e.target?.files[0]);
 
-        await axios.put(`${server}/user/update-avatar`, formData, {
+    //     await axios.put(`${server}/user/update-avatar`, formData, {
+    //         headers: {
+    //             "Content-Type": "multipart/form-data",
+    //         },
+    //         withCredentials: true,
+    //     }).then((response) => {
+    //         window.location.reload();
+    //     }).catch((error) => {
+    //         toast.error(error.message);
+    //     })
+    // };
+    const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        const fileInput = e.target as HTMLInputElement; // Type casting to HTMLInputElement
+        const file = fileInput.files?.[0];
+        setAvatar(file)
+
+        const formData = new FormData()
+
+        formData.append("image", file)
+            
+            await axios.put(`${server}/user/update-avatar`, formData, {
             headers: {
-                "Content-Type": "multipart/form-data",
-            },
-            withCredentials: true,
-        }).then((response) => {
-            window.location.reload();
+                "Content-Type": "multipart/form-data", 
+            }, 
+            withCredentials: true
+        }).then((res) => {
+            window.location.reload()
         }).catch((error) => {
-            toast.error(error.message);
+            toast.error(error.response.data.message)
         })
-    };
+    }
 
     return (
         <div className='w-full'>
@@ -78,7 +99,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
                         <div className="relative">
                             {user && user.avatar && (
                                 <img
-                                    src={`${backend_url}${user.avatar}`}
+                                    src={avatar ? avatar : `${backend_url}${user.avatar}`}
                                     className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                                     alt=""
                                 />
