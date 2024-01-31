@@ -10,7 +10,17 @@ const DashboardMessages = () => {
         All Messages
       </h1>
       {/* All messages list */}
-      <MessageList />
+      <MessageList user={user} />
+    </div>
+  )
+}
+
+interface MessageListProps {
+  user: any
+}
+const MessageList: React.FC<MessageListProps> = ({ user }) => {
+  return (
+    <>
       <div className='w-full flex p-1 px-3 my-3 bg-[#00000010] cursor-pointer'>
         <div className='relative'>
           <img
@@ -25,14 +35,6 @@ const DashboardMessages = () => {
           <p className='text-[16px] text-[#000c]'>You: Yeah I am good</p>
         </div>
       </div>
-    </div>
-  )
-}
-
-const MessageList = () => {
-  return (
-    <>
-      <h1>Message List</h1>
     </>
   )
 }

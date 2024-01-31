@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from '../../styles/styles';
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai';
-import { backend_url } from '../../server';
+import { backend_url, server } from '../../server';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Ratings from './Ratings';
+import axios from 'axios';
 interface ProductDetailsProps {
     data: any,
     addTocart: any,
@@ -17,8 +18,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
     const { wishlist } = useSelector((state: any) => state.wishlist);
     const { cart } = useSelector((state: any) => state.cart);
     const { products } = useSelector((state: any) => state.products);
+    const { user, isAuthenticated } = useSelector((state: any) => state.user);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [count, setCount] = useState(1);
     const [click, setClick] = useState(false);
@@ -84,12 +87,33 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
 
     const averageRating = avg.toFixed(2);
 
+    const handleMessageSubmit = async () => {
+        if (isAuthenticated) {
+            const groupTitle = data?._id + user?._id;
+            const userId = user?._id;
+            const sellerId = data?.shop?._id;
+            await axios
+                .post(`${server}/conversation/create-new-conversation`, {
+                    groupTitle,
+                    userId,
+                    sellerId,
+                })
+                .then((res: any) => {
+                    // navigate(`/inbox?${res?.data?.conversation?._id}`);
+                })
+                .catch((error) => {
+                    toast.error(error?.response?.data?.message);
+                });
+        } else {
+            toast.error("Please login to create a conversation");
+        }
+    };
 
     return (
         <>
             <div className='bg-white'>
                 {
-                    data ? (
+                    data && data ? (
                         <div className={`${styles.section} w-[90%] 800px:w-[80%]`} style={{ marginBottom: "100px" }}>
                             <div className='w-full py-5'>
                                 <div className='block w-full 800px:flex'>
@@ -97,7 +121,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                         <img src={`${backend_url}${data?.images[select]}`} alt="" className='w-[80%]' />
                                         <div className='w-full flex'>
                                             {
-                                                data && data?.images.map((i: any, index: any) => (
+                                                data && data?.images?.map((i: any, index: any) => (
                                                     <div className={`${select === 0 ? "border" : "null"} cursor-pointer`}>
                                                         <img
                                                             src={`${backend_url}${i}`} alt=""
@@ -179,10 +203,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                                     </h3>
                                                 </Link>
                                                 <h5 className="pb-3 text-[15px]">
-                                                ({averageRating}/5) Ratings
+                                                    ({averageRating}/5) Ratings
                                                 </h5>
                                             </div>
-                                            <div className={`${styles.button} bg-[#6443d1] mt-4 !rounded !h-11`}>
+                                            <div className={`${styles.button} bg-[#6443d1] mt-4 !rounded !h-11`} onClick={handleMessageSubmit}>
                                                 <span className="text-white flex items-center">
                                                     Send Message <AiOutlineMessage className="ml-1" />
                                                 </span>
@@ -303,7 +327,7 @@ const ProductDetailsInfo: React.FC<ProductDetailsInfoProps> = ({ data, products,
                                 <div className="pl-3">
                                     <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                                     <h5 className="pb-2 text-[15px]">
-                                        ({averageRating}/5) Ratings 
+                                        ({averageRating}/5) Ratings
                                     </h5>
                                 </div>
                             </div>
