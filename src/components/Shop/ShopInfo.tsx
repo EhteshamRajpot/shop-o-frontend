@@ -14,11 +14,10 @@ interface ShopInfoProps {
 }
 
 const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner, getAllProductsShop, getAllEventsShop }) => {
-    // console.log(getAllEventsShop)
-    // console.log(getAllProductsShop)
-
     const [data, setData] = useState<any>({})
     const [isLoading, setIsLoading] = useState(false)
+    const { products } = useSelector((state: any) => state.products)
+    const dispatch = useDispatch()
 
     const { id } = useParams();
     useEffect(() => {
@@ -35,7 +34,8 @@ const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner, getAllProductsShop, getAll
         };
 
         fetchData();
-    }, [id]);
+        dispatch(getAllProductsShop(id))
+    }, [id, getAllProductsShop]);
 
 
     const logoutHandler = async () => {
@@ -79,7 +79,8 @@ const ShopInfo: React.FC<ShopInfoProps> = ({ isOwner, getAllProductsShop, getAll
                         </div>
                         <div className="p-3">
                             <h5 className="font-[600]">Total Products</h5>
-                            <h4 className="text-[#000000a6]">109</h4>
+                            <h4 className="text-[#000000a6]">{products?.length}</h4>
+                        
                         </div>
                         <div className="p-3">
                             <h5 className="font-[600]">Shop Ratings</h5>
