@@ -39,6 +39,7 @@ import {
   ShopAllCoupounsPage,
   ShopCreateEventsPage,
   ShopOrderDetailsPage,
+  ShopWithDrawMoneyPage,
 } from "./routes/ShopRoutes";
 
 import { ToastContainer } from "react-toastify";
@@ -229,6 +230,13 @@ function App() {
       element:
         <SellerProtectedRoutes>
           <ShopAllCoupounsPage />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/dashboard-withdraw-money",
+      element:
+        <SellerProtectedRoutes>
+          <ShopWithDrawMoneyPage />
         </SellerProtectedRoutes>
     },
     {

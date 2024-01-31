@@ -16,12 +16,13 @@ import { getAllOrdersOfUser } from '../../redux/actions/order';
 
 interface ProfileContentProps {
     active: any,
+    loadUser: any,
     updatUserAddress: any,
-    updateUserInformation: any
     deleteUserAddress: any
     getAllOrdersOfUser: any
+    updateUserInformation: any
 }
-const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInformation, updatUserAddress, deleteUserAddress, getAllOrdersOfUser }) => {
+const ProfileContent: React.FC<ProfileContentProps> = ({ active, loadUser, updateUserInformation, updatUserAddress, deleteUserAddress, getAllOrdersOfUser }) => {
     const { user, error, successMessage } = useSelector((state: any) => state.user)
 
     const [name, setName] = useState(user && user.name);
@@ -77,14 +78,15 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, updateUserInfor
         const formData = new FormData()
 
         formData.append("image", file)
-            
-            await axios.put(`${server}/user/update-avatar`, formData, {
+
+        await axios.put(`${server}/user/update-avatar`, formData, {
             headers: {
-                "Content-Type": "multipart/form-data", 
-            }, 
+                "Content-Type": "multipart/form-data",
+            },
             withCredentials: true
         }).then((res) => {
-            window.location.reload()
+            dispatch(loadUser())
+            toast.success("Avatar updated successfully")
         }).catch((error) => {
             toast.error(error.response.data.message)
         })

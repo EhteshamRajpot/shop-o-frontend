@@ -10,6 +10,7 @@ import ShopCreateProduct from "../pages/Shop/ShopCreateProductPage.tsx";
 import ShopAllCoupounsPage from "../pages/Shop/ShopAllCoupounsPage.tsx";
 import ShopCreateEventsPage from "../pages/Shop/ShopCreateEventsPage.tsx";
 import ShopOrderDetailsPage from "../pages/Shop/ShopOrderDetailsPage.tsx";
+import ShopWithDrawMoneyPage from "../pages/Shop/ShopWithDrawMoneyPage.tsx";
 
 export {
     ShopHomePage,
@@ -24,4 +25,5 @@ export {
     ShopAllCoupounsPage,
     ShopOrderDetailsPage,
     ShopCreateEventsPage,
+    ShopWithDrawMoneyPage,
 }
