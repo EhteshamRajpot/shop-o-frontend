@@ -25,7 +25,6 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
         dispatch(getAllEventsShop(id));
     }, [dispatch]);
 
-
     const allReviews =
         products && products.map((product: any) => product.reviews).flat();
 
