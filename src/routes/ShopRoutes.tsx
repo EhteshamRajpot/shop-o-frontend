@@ -1,4 +1,5 @@
 import ShopHomePage from "../pages/Shop/ShopHomePage.tsx";
+import ShopInboxPage from "../pages/Shop/ShopInboxPage.tsx";
 import ShopPreviewPage from "../pages/Shop/ShopPreviewPage.tsx";
 import ShopSettingsPage from "../pages/Shop/ShopSettingsPage.tsx";
 import ShopAllOrdersPage from "../pages/Shop/ShopAllOrdersPage.tsx";
@@ -14,6 +15,7 @@ import ShopWithDrawMoneyPage from "../pages/Shop/ShopWithDrawMoneyPage.tsx";
 
 export {
     ShopHomePage,
+    ShopInboxPage,
     ShopAllProducts,
     ShopPreviewPage,
     ShopSettingsPage,

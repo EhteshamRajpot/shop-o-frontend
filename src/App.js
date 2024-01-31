@@ -28,6 +28,7 @@ import {
 
 import {
   ShopHomePage,
+  ShopInboxPage,
   ShopAllProducts,
   ShopPreviewPage,
   ShopSettingsPage,
@@ -237,6 +238,13 @@ function App() {
       element:
         <SellerProtectedRoutes>
           <ShopWithDrawMoneyPage />
+        </SellerProtectedRoutes>
+    },
+    {
+      path: "/dashboard-messages",
+      element:
+        <SellerProtectedRoutes>
+          <ShopInboxPage />
         </SellerProtectedRoutes>
     },
     {
