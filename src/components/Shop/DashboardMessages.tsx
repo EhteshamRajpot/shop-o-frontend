@@ -124,7 +124,7 @@ const SellerInbox: React.FC<SellerInboxProps> = ({ user, setOpen }) => {
           <div className='w-max p-2 rounded bg-[#38c776] text-[#fff] h-min'>
             <p>Hi!</p>
           </div>
-        </div>
+        </div> 
       </div>
       {/* send message input */}
       <form
