@@ -1,28 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { backend_url, server } from '../../server'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { AiOutlineArrowRight, AiOutlineSend } from 'react-icons/ai'
-import styles from '../../styles/styles'
+import axios from "axios";
+import React, { useRef, useState } from "react";
+import { useEffect } from "react";
+import { backend_url, server } from "../../server";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
+import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import socketIO from "socket.io-client";
-const ENDPOINT = "http://localhost:4000/";
-const socketId = socketIO(ENDPOINT, { transports: ["websocket"] })
+// import { format } from "timeago.js";
+const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
+interface arrivalMessageType {
+  sender: any
+  text: any
+  createdAt: any
+}
+
+interface currentChatType {
+  members: any
+  member: any
+}
+
+interface newMessageType {
+  prev: any
+}
 const DashboardMessages = () => {
-  const { user } = useSelector((state: any) => state.user)
-  const { seller } = useSelector((state: any) => state.seller)
-  const [conversations, setConversations] = useState<any[]>([]);
-  const [arrivalMessage, setArrivalMessage] = useState<{
-    sender: any;
-    text: any;
-    createdAt: number;
-  } | null>(null);
-  const [currentChat, setCurrentChat] = useState(null)
-  const [messages, setMessages] = useState(null)
+  const { seller, isLoading } = useSelector((state: any) => state.seller);
+  const { user } = useSelector((state: any) => state.user);
+  const [conversations, setConversations] = useState([]);
+  const [arrivalMessage, setArrivalMessage] = useState<arrivalMessageType>();
+  const [currentChat, setCurrentChat] = useState<currentChatType>();
+  const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [newMessage, setNewMessage] = useState("")
+  const [newMessage, setNewMessage] = useState<newMessageType>();
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeStatus, setActiveStatus] = useState(false);
   const [images, setImages] = useState();
@@ -34,17 +46,16 @@ const DashboardMessages = () => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
-        createdAt: Date.now()
-      })
-    })
-  }, [])
-
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
 
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.sender) &&
-      setMessages((prev) => [...prev, arrivalMessage])
-  }, [arrivalMessage, currentChat])
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
     const getConversation = async () => {
@@ -75,12 +86,11 @@ const DashboardMessages = () => {
   }, [seller]);
 
   const onlineCheck = (chat: any) => {
-    const chatMembers = chat.members.find((member) => member !== seller?._id);
+    const chatMembers = chat.members.find((member: any) => member !== seller?._id);
     const online = onlineUsers.find((user) => user.userId === chatMembers);
 
     return online ? true : false;
   };
-
 
   // get messages
   useEffect(() => {
@@ -98,14 +108,8 @@ const DashboardMessages = () => {
   }, [currentChat]);
 
   // create new message
-  const sendMessageHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const sendMessageHandler = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-
-    if (!currentChat) {
-      // Handle the case when currentChat is null
-      console.error("currentChat is null");
-      return;
-    }
 
     const message = {
       sender: seller._id,
@@ -146,12 +150,6 @@ const DashboardMessages = () => {
       lastMessageId: seller._id,
     });
 
-    if (!currentChat) {
-      // Handle the case when currentChat is null
-      console.error("currentChat is null");
-      return;
-    }
-
     await axios
       .put(`${server}/conversation/update-last-message/${currentChat._id}`, {
         lastMessage: newMessage,
@@ -179,14 +177,9 @@ const DashboardMessages = () => {
     reader.readAsDataURL(e.target.files[0]);
   };
 
-  const imageSendingHandler = async (e: React.FormEvent<HTMLImageElement>) => {
-    if (!currentChat) {
-      // Handle the case when currentChat is null
-      console.error("currentChat is null");
-      return;
-    }
+  const imageSendingHandler = async (e) => {
     const receiverId = currentChat.members.find(
-      (member: any) => member !== seller._id
+      (member) => member !== seller._id
     );
 
     socketId.emit("sendMessage", {
@@ -214,13 +207,6 @@ const DashboardMessages = () => {
   };
 
   const updateLastMessageForImage = async () => {
-
-    if (!currentChat) {
-      // Handle the case when currentChat is null
-      console.error("currentChat is null");
-      return;
-    }
-
     await axios.put(
       `${server}/conversation/update-last-message/${currentChat._id}`,
       {
@@ -234,123 +220,232 @@ const DashboardMessages = () => {
     scrollRef.current?.scrollIntoView({ beahaviour: "smooth" });
   }, [messages]);
 
-
   return (
     <div className="w-[90%] bg-white m-5 h-[85vh] overflow-y-scroll rounded">
-      {/* All messages list */}
-      {
-        !open && (
-          <>
-            <h1 className="text-center text-[30px] py-3 font-Poppins">
-              All Messages
-            </h1>
-            {
-              conversations && conversations.map((item, index) => (
-                <MessageList user={user} data={item} key={index} index={index} setOpen={setOpen} setCurrentChat={setCurrentChat} />
-              ))
-            }
-          </>
-        )}
+      {!open && (
+        <>
+          <h1 className="text-center text-[30px] py-3 font-Poppins">
+            All Messages
+          </h1>
+          {/* All messages list */}
+          {conversations &&
+            conversations.map((item, index) => (
+              <MessageList
+                userImage={user}
+                data={item}
+                key={index}
+                index={index}
+                setOpen={setOpen}
+                setCurrentChat={setCurrentChat}
+                me={seller._id}
+                setUserData={setUserData}
+                userData={userData}
+                online={onlineCheck(item)}
+                setActiveStatus={setActiveStatus}
+                isLoading={isLoading}
+              />
+            ))}
+        </>
+      )}
 
-      {
-        open && (
-          <SellerInbox
-            user={user}
-            setOpen={setOpen}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            sendMessageHandler={sendMessageHandler}
-          />
-        )
-      }
+      {open && (
+        <SellerInbox
+          userImage={user}
+          setOpen={setOpen}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          sendMessageHandler={sendMessageHandler}
+          messages={messages}
+          sellerId={seller._id}
+          userData={userData}
+          activeStatus={activeStatus}
+          scrollRef={scrollRef}
+          setMessages={setMessages}
+          handleImageUpload={handleImageUpload}
+        />
+      )}
     </div>
-  )
-}
+  );
+};
 
 interface MessageListProps {
-  user: any
-  data: any
-  index: any
-  setOpen: any
-  setCurrentChat: any
-}
-const MessageList: React.FC<MessageListProps> = ({ user, data, index, setOpen, setCurrentChat }) => {
-  const [active, setActive] = useState<number>(0)
-  const navigate = useNavigate()
-  const handleClick = (id: any) => {
-    // navigate(`dashboard-messages?${id}`)
-    setOpen(true)
-  }
-  return (
-    <>
-      <div className={`w-full flex p-1 px-3 ${active === index ? "bg-[#00000010]" : "bg-transparent"} cursor-pointer`}
-        onClick={(e) => {
-          setActive(index);
-          handleClick(data._id);
-          setCurrentChat(data);
-        }}
-      >
-        <div className='relative'>
-          <img
-            src={`${backend_url}${user?.avatar}`}
-            alt=""
-            className="w-[50px] h-[50px] rounded-full"
-          />
-          <div className='w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]' />
-        </div>
-        <div className="pl-3">
-          <h1 className="text-[18px]">Muhammad Ehtesham</h1>
-          <p className='text-[16px] text-[#000c]'>You: Yeah I am good</p>
-        </div>
-      </div>
-    </>
-  )
+  userImage: any,
+  data: any,
+  index: any,
+  setOpen: any,
+  setCurrentChat: any,
+  me: any,
+  setUserData: any,
+  online: any,
+  setActiveStatus: any,
+  isLoading: any
 }
 
+const MessageList:React.FC<MessageListProps> = ({
+  userImage,
+  data,
+  index,
+  setOpen,
+  setCurrentChat,
+  me,
+  setUserData,
+  online,
+  setActiveStatus,
+  isLoading
+}) => {
+  console.log(data);
+  const [user, setUser] = useState([]);
+  const navigate = useNavigate();
+  const handleClick = (id: any) => {
+    navigate(`/dashboard-messages?${id}`);
+    setOpen(true);
+  };
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const userId = data.members.find((user: any) => user != me);
+
+    const getUser = async () => {
+      try {
+        const res = await axios.get(`${server}/user/user-info/${userId}`);
+        setUser(res.data.user);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, [me, data]);
+
+  return (
+    <div
+      className={`w-full flex p-3 px-3 ${active === index ? "bg-[#00000010]" : "bg-transparent"
+        }  cursor-pointer`}
+      onClick={(e) =>
+        setActive(index) ||
+        handleClick(data._id) ||
+        setCurrentChat(data) ||
+        setUserData(user) ||
+        setActiveStatus(online)
+      }
+    >
+      <div className="relative">
+        <img
+          src={`${backend_url}${userImage?.avatar}`}
+          alt=""
+          className="w-[50px] h-[50px] rounded-full"
+        />
+        {online ? (
+          <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]" />
+        ) : (
+          <div className="w-[12px] h-[12px] bg-[#c7b9b9] rounded-full absolute top-[2px] right-[2px]" />
+        )}
+      </div>
+      <div className="pl-3">
+        <h1 className="text-[18px]">{user?.name}</h1>
+        <p className="text-[16px] text-[#000c]">
+          {!isLoading && data?.lastMessageId !== user?._id
+            ? "You:"
+            : user?.name.split(" ")[0] + ": "}{" "}
+          {data?.lastMessage}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 interface SellerInboxProps {
-  user: any
-  setOpen: any
-  newMessage: any
-  setNewMessage: any
-  sendMessageHandler: any
+  scrollRef: any,
+  setOpen: any,
+  newMessage: any,
+  setNewMessage: any,
+  sendMessageHandler: any,
+  messages: any,
+  sellerId: any,
+  userData: any,
+  userImage: any,
+  activeStatus: any,
+  handleImageUpload: any,
 }
-const SellerInbox: React.FC<SellerInboxProps> = ({ user, setOpen, newMessage, setNewMessage, sendMessageHandler }) => {
+
+const SellerInbox:React.FC<SellerInboxProps> = ({
+  scrollRef,
+  setOpen,
+  newMessage,
+  setNewMessage,
+  sendMessageHandler,
+  messages,
+  sellerId,
+  userData,
+  userImage,
+  activeStatus,
+  handleImageUpload,
+}) => {
   return (
     <div className="w-full min-h-full flex flex-col justify-between">
       {/* message header */}
-      <div className='w-full flex p-3 items-center justify-between bg-slate-200'>
+      <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={`${backend_url}${user?.avatar}`}
+            src={`${backend_url}${userImage.avatar}`}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
           <div className="pl-3">
-            <h1 className="text-[18px] font-[600]">{user?.name}</h1>
-            <h1>Active now</h1>
+            <h1 className="text-[18px] font-[600]">{userData?.name}</h1>
+            <h1>{activeStatus ? "Active Now" : ""}</h1>
           </div>
         </div>
-        <AiOutlineArrowRight size={30} onClick={() => setOpen(false)} className='cursor-pointer' />
+        <AiOutlineArrowRight
+          size={20}
+          className="cursor-pointer"
+          onClick={() => setOpen(false)}
+        />
       </div>
 
       {/* messages */}
-      <div className='px-3 h-[65vh] py-3 overflow-y-scroll'>
-        <div className='flex w-full my-2'>
-          <img
-            src={`${backend_url}${user?.avatar}`}
-            className='w-[40px] h-[40px] rounded-full mr-3'
-            alt=""
-          />
-          <div className='w-max p-2 rounded bg-[#38c776] text-[#fff] h-min'>
-            <p>Hello there!</p>
-          </div>
-        </div>
-        <div className='flex w-full justify-end my-2'>
-          <div className='w-max p-2 rounded bg-[#38c776] text-[#fff] h-min'>
-            <p>Hi!</p>
-          </div>
-        </div>
+      <div className="px-3 h-[65vh] py-3 overflow-y-scroll">
+        {messages &&
+          messages.map((item: any, index: any) => {
+            return (
+              <div
+                className={`flex w-full my-2 ${item.sender === sellerId ? "justify-end" : "justify-start"
+                  }`}
+                ref={scrollRef}
+              >
+                {item.sender !== sellerId && (
+                  <img
+                    src={`${backend_url}${userData?.avatar}`}
+                    className="w-[40px] h-[40px] rounded-full mr-3"
+                    alt="Is"
+                  />
+                )}
+                {item.images && (
+                  <></>
+                  // <img
+                  //   src={`${item.images?.url}`}
+                  //   className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
+                  //   alt="Image"
+                  // />
+                )}
+                {item.text !== "" && (
+                  <div>
+                    <div
+                      className={`w-max p-2 rounded ${item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
+                        } text-[#fff] h-min`}
+                    >
+                      <p>{item.text}</p>
+                    </div>
+
+                    <p className="text-[12px] text-[#000000d3] pt-1">
+                      {/* {format(item.createdAt)} */}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
+
       {/* send message input */}
       <form
         aria-required={true}
@@ -363,7 +458,7 @@ const SellerInbox: React.FC<SellerInboxProps> = ({ user, setOpen, newMessage, se
             name=""
             id="image"
             className="hidden"
-          // onChange={handleImageUpload}
+            onChange={handleImageUpload}
           />
           <label htmlFor="image">
             <TfiGallery className="cursor-pointer" size={20} />
@@ -388,7 +483,7 @@ const SellerInbox: React.FC<SellerInboxProps> = ({ user, setOpen, newMessage, se
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardMessages
+export default DashboardMessages;

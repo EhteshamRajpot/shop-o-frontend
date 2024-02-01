@@ -8,6 +8,7 @@ import {
 import {
   FAQPage,
   HomePage,
+  UserInbox,
   LoginPage,
   EventsPage,
   SignupPage,
@@ -131,6 +132,13 @@ function App() {
       element:
         <ProtectedRoutes>
           <ProfilePage />
+        </ProtectedRoutes>,
+    },
+    {
+      path: "/inbox",
+      element:
+        <ProtectedRoutes>
+          <UserInbox />
         </ProtectedRoutes>,
     },
     {
