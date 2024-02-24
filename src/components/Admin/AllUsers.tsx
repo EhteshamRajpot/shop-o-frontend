@@ -11,7 +11,10 @@ import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
 
-const AllUsers = () => {
+interface AllUsersProps{
+  getAllUsers: any
+}
+const AllUsers:React.FC<AllUsersProps> = ({getAllUsers}) => {
   const dispatch = useDispatch();
   const { users } = useSelector((state: any) => state.user);
   const [open, setOpen] = useState(false);

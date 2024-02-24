@@ -12,6 +12,7 @@ const clearErrors = createAction("clearErrors");
 interface SellerState {
   isLoading?: boolean;
   seller?: any;
+  sellers?: any;
   error?: any;
   isSeller?: any;
 }
@@ -43,7 +44,7 @@ export const sellerReducer = createReducer(initialState, (builder) => {
     .addCase(getAllSellersSuccess, (state, action) => {
       state.isSeller = true;
       state.isLoading = false;
-      state.seller = action.payload;
+      state.sellers = action.payload;
     })
     .addCase(getAllSellerFailed, (state, action) => {
       state.isLoading = false;

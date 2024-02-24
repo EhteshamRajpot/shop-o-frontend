@@ -8,7 +8,6 @@ import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
-import { getAllSellers } from "../../redux/actions/sellers";
 import { Link } from "react-router-dom";
 
 interface AllSellersProps {
@@ -16,7 +15,9 @@ interface AllSellersProps {
 }
 const AllSellers: React.FC<AllSellersProps> = ({ getAllSellers }) => {
   const dispatch = useDispatch();
-  const { sellers } = useSelector((state: any) => state.seller);
+  const { sellers, seller } = useSelector((state: any) => state.seller);
+  console.log("Seller Info", seller)
+  console.log("Sellers Info", sellers)
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
 

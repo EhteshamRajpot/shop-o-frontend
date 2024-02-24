@@ -2,6 +2,7 @@ import React from 'react'
 import AdminHeader from '../components/Layout/AdminHeader.tsx'
 import AdminSideBar from '../components/Admin/Layout/AdminSideBar'
 import AllUsers from "../components/Admin/AllUsers.tsx";
+import { getAllUsers } from '../redux/actions/user.tsx';
 
 const AdminDashboardUsers = () => {
   return (
@@ -12,7 +13,7 @@ const AdminDashboardUsers = () => {
         <div className="w-[80px] 800px:w-[330px]">
           <AdminSideBar active={4} />
         </div>
-        <AllUsers />
+        <AllUsers getAllUsers={getAllUsers}/>
       </div>
     </div>
   </div>
