@@ -3,9 +3,12 @@ import { createReducer, createAction } from "@reduxjs/toolkit";
 // Define actions
 const clearErrors = createAction("clearErrors");
 const loadUserRequest = createAction("LoadUserRequest");
+const getAllUsersRequest = createAction("getAllUsersRequest");
 const loadUserFail = createAction<{ payload: any }>("LoadUserFail");
 const updateUserInfoRequest = createAction("updateUserInfoRequest");
 const deleteUserAddressRequest = createAction("deleteUserAddressRequest");
+const getAllUsersSuccess = createAction("getAllUsersSuccess");
+const getAllUsersFailed = createAction("getAllUsersFailed");
 const deleteUserAddressSuccess = createAction<{ successMessage: any }>("deleteUserAddressSuccess");
 const loadUserSuccess = createAction<{ payload: any }>("LoadUserSuccess");
 const updateUserAddressRequest = createAction("updateUserAddressRequest");
@@ -22,6 +25,8 @@ interface UserState {
   addressLoading?: any;
   successMessage?: any;
   isAuthenticated?: boolean;
+  usersLoading?: any, 
+  users?: any
 }
 
 const initialState: UserState = {
@@ -84,6 +89,20 @@ export const userReducer = createReducer(initialState, (builder) => {
       state.addressLoading = false;
       state.error = action.payload;
     })
+
+    // get all users --admin
+    .addCase(getAllUsersRequest, (state) => {
+      state.usersLoading = true;
+    })
+    .addCase(getAllUsersSuccess, (state, action) => {
+      state.usersLoading = false;
+      state.users = action.payload;
+    })
+    .addCase(getAllUsersFailed, (state, action) => {
+      state.usersLoading = false;
+      state.error = action.payload;
+    })
+
 
     .addCase(clearErrors, (state) => {
       state.error = null;

@@ -44,10 +44,21 @@ import {
   ShopWithDrawMoneyPage,
 } from "./routes/ShopRoutes";
 
+import {
+  AdminDashboardPage,
+  AdminDashboardUsers,
+  AdminDashboardSellers,
+  AdminDashboardOrders,
+  AdminDashboardProducts,
+  AdminDashboardEvents,
+  AdminDashboardWithdraw
+} from "./routes/AdminRoutes";
+
 import { ToastContainer } from "react-toastify";
 import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
 import ProtectedRoutes from "./protectedRoutes/ProtectedRoutes";
+import ProtectedAdminRoute from "./protectedRoutes/ProtectedAdminRoute"
 import SellerProtectedRoutes from "./protectedRoutes/SellerProtectedRoutes";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
@@ -65,18 +76,18 @@ function App() {
   }
 
   useEffect(() => {
-    getStripeApikey();
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllEvents());
     Store.dispatch(getAllProducts());
+    getStripeApikey();
   }, [])
 
   const router = createBrowserRouter([
-    stripeApikey  && {
+    stripeApikey && {
       path: "/payment",
       element: (
-        <Elements stripe={loadStripe(stripeApikey )}>
+        <Elements stripe={loadStripe(stripeApikey)}>
           <ProtectedRoutes>
             <PaymentPage />
           </ProtectedRoutes>
@@ -269,9 +280,58 @@ function App() {
     {
       path: "/order/success",
       element: <OrderSuccessPage />
-    }
+    },
 
-
+    // Admin Routes
+    {
+      path: "/admin/dashboard",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardPage />
+        </ProtectedAdminRoute>
+    },
+    {
+      path: "/admin-users",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardUsers />
+        </ProtectedAdminRoute>
+    },
+    {
+      path: "/admin-sellers",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardSellers />
+        </ProtectedAdminRoute>
+    },
+    {
+      path: "/admin-orders",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardOrders />
+        </ProtectedAdminRoute>
+    },
+    {
+      path: "/admin-products",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardProducts />
+        </ProtectedAdminRoute>
+    },
+    {
+      path: "/admin-events",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardEvents />
+        </ProtectedAdminRoute>
+    },
+    {
+      path: "/admin-withdraw-request",
+      element:
+        <ProtectedAdminRoute>
+          <AdminDashboardWithdraw />
+        </ProtectedAdminRoute>
+    },
   ]);
 
   return (
