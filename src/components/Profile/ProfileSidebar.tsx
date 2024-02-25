@@ -6,6 +6,7 @@ import { RxPerson } from 'react-icons/rx'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import {
+    MdOutlineAdminPanelSettings,
     MdOutlineTrackChanges,
 } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
@@ -141,10 +142,10 @@ const ProfileSidebar: React.FC<ProfileSideBarProps> = ({ active, setActive }) =>
                         className="flex items-center cursor-pointer w-full mb-8"
                         onClick={() => setActive(8)}
                     >
-                        {/* <MdOutlineAdminPanelSettings
+                        <MdOutlineAdminPanelSettings
                             size={20}
                             color={active === 7 ? "red" : ""}
-                        /> */}
+                        />
                         <span
                             className={`pl-3 ${active === 8 ? "text-[red]" : ""
                                 } 800px:block hidden`}
