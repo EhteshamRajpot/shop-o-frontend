@@ -1,45 +1,31 @@
 import axios from "axios";
-import React, { useRef, useState } from "react";
-import { useEffect } from "react";
-import { backend_url, server } from "../../server";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useRef, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
-import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import socketIO from "socket.io-client";
-// import { format } from "timeago.js";
+import { backend_url, server } from "../../server";
+import styles from "../../styles/styles";
+
 const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
-interface arrivalMessageType {
-  sender: any
-  text: any
-  createdAt: any
-}
-
-interface currentChatType {
-  members: any
-  member: any
-}
-
-interface newMessageType {
-  prev: any
-}
 const DashboardMessages = () => {
-  const { seller, isLoading } = useSelector((state: any) => state.seller);
-  const { user } = useSelector((state: any) => state.user);
+  const { seller } = useSelector((state: any) => state.seller);
+  const { user } = useSelector((state) => state.user);
   const [conversations, setConversations] = useState([]);
-  const [arrivalMessage, setArrivalMessage] = useState<arrivalMessageType>();
-  const [currentChat, setCurrentChat] = useState<currentChatType>();
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [newMessage, setNewMessage] = useState<newMessageType>();
+  const [newMessage, setNewMessage] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeStatus, setActiveStatus] = useState(false);
-  const [images, setImages] = useState();
+  const [images, setImages] = useState(null);
   const [open, setOpen] = useState(false);
   const scrollRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socketId.on("getMessage", (data) => {
@@ -60,16 +46,15 @@ const DashboardMessages = () => {
   useEffect(() => {
     const getConversation = async () => {
       try {
-        const resonse = await axios.get(
+        const response = await axios.get(
           `${server}/conversation/get-all-conversation-seller/${seller?._id}`,
           {
             withCredentials: true,
           }
         );
-
-        setConversations(resonse.data.conversations);
+        setConversations(response.data.conversations);
       } catch (error) {
-        // console.log(error);
+        console.error("Error fetching conversations:", error);
       }
     };
     getConversation();
@@ -77,7 +62,7 @@ const DashboardMessages = () => {
 
   useEffect(() => {
     if (seller) {
-      const sellerId = seller?._id;
+      const sellerId = seller._id;
       socketId.emit("addUser", sellerId);
       socketId.on("getUsers", (data) => {
         setOnlineUsers(data);
@@ -88,28 +73,28 @@ const DashboardMessages = () => {
   const onlineCheck = (chat: any) => {
     const chatMembers = chat.members.find((member: any) => member !== seller?._id);
     const online = onlineUsers.find((user) => user.userId === chatMembers);
-
     return online ? true : false;
   };
 
-  // get messages
   useEffect(() => {
     const getMessage = async () => {
       try {
-        const response = await axios.get(
-          `${server}/message/get-all-messages/${currentChat?._id}`
-        );
-        setMessages(response.data.messages);
+        if (currentChat) {
+          const response = await axios.get(
+            `${server}/message/get-all-messages/${currentChat._id}`
+          );
+          setMessages(response.data.messages);
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching messages:", error);
       }
     };
     getMessage();
   }, [currentChat]);
 
-  // create new message
-  const sendMessageHandler = async (e: React.FormEvent<HTMLInputElement>) => {
+  const sendMessageHandler = async (e) => {
     e.preventDefault();
+    if (!currentChat) return;
 
     const message = {
       sender: seller._id,
@@ -118,7 +103,7 @@ const DashboardMessages = () => {
     };
 
     const receiverId = currentChat.members.find(
-      (member: any) => member.id !== seller._id
+      (member: any) => member !== seller._id
     );
 
     socketId.emit("sendMessage", {
@@ -128,97 +113,100 @@ const DashboardMessages = () => {
     });
 
     try {
-      if (newMessage !== "") {
-        await axios
-          .post(`${server}/message/create-new-message`, message)
-          .then((res) => {
-            setMessages([...messages, res.data.message]);
-            updateLastMessage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      if (newMessage.trim() !== "") {
+        const res = await axios.post(
+          `${server}/message/create-new-message`,
+          message
+        );
+        setMessages([...messages, res.data.message]);
+        updateLastMessage();
+        setNewMessage("");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error sending message:", error);
     }
   };
 
   const updateLastMessage = async () => {
-    socketId.emit("updateLastMessage", {
-      lastMessage: newMessage,
-      lastMessageId: seller._id,
-    });
-
-    await axios
-      .put(`${server}/conversation/update-last-message/${currentChat._id}`, {
-        lastMessage: newMessage,
-        lastMessageId: seller._id,
-      })
-      .then((res) => {
-        console.log(res.data.conversation);
-        setNewMessage("");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleImageUpload = async (e) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setImages(reader.result);
-        imageSendingHandler(reader.result);
-      }
-    };
-
-    reader.readAsDataURL(e.target.files[0]);
-  };
-
-  const imageSendingHandler = async (e) => {
-    const receiverId = currentChat.members.find(
-      (member) => member !== seller._id
-    );
-
-    socketId.emit("sendMessage", {
-      senderId: seller._id,
-      receiverId,
-      images: e,
-    });
-
     try {
-      await axios
-        .post(`${server}/message/create-new-message`, {
-          images: e,
-          sender: seller._id,
-          text: newMessage,
-          conversationId: currentChat._id,
-        })
-        .then((res) => {
-          setImages();
-          setMessages([...messages, res.data.message]);
-          updateLastMessageForImage();
+      if (currentChat) {
+        socketId.emit("updateLastMessage", {
+          lastMessage: newMessage,
+          lastMessageId: seller._id,
         });
+
+        await axios.put(
+          `${server}/conversation/update-last-message/${currentChat._id}`,
+          {
+            lastMessage: newMessage,
+            lastMessageId: seller._id,
+          }
+        );
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error updating last message:", error);
     }
   };
 
-  const updateLastMessageForImage = async () => {
-    await axios.put(
-      `${server}/conversation/update-last-message/${currentChat._id}`,
-      {
-        lastMessage: "Photo",
-        lastMessageId: seller._id,
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const imageData = reader.result;
+      setImages(imageData);
+      try {
+        const receiverId = currentChat.members.find(
+          (member: any) => member !== seller._id
+        );
+
+        socketId.emit("sendMessage", {
+          senderId: seller._id,
+          receiverId,
+          images: imageData,
+        });
+
+        const res = await axios.post(`${server}/message/create-new-message`, {
+          images: imageData,
+          sender: seller._id,
+          text: newMessage,
+          conversationId: currentChat._id,
+        });
+        setImages(null);
+        setMessages([...messages, res.data.message]);
+        updateLastMessageForImage();
+      } catch (error) {
+        console.error("Error sending image message:", error);
       }
-    );
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const updateLastMessageForImage = async () => {
+    try {
+      if (currentChat) {
+        await axios.put(
+          `${server}/conversation/update-last-message/${currentChat._id}`,
+          {
+            lastMessage: "Photo",
+            lastMessageId: seller._id,
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Error updating last message for image:", error);
+    }
   };
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ beahaviour: "smooth" });
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleClick = (id: any) => {
+    navigate(`/dashboard-messages?${id}`);
+    setOpen(true);
+  };
 
   return (
     <div className="w-[90%] bg-white m-5 h-[85vh] overflow-y-scroll rounded">
@@ -227,7 +215,6 @@ const DashboardMessages = () => {
           <h1 className="text-center text-[30px] py-3 font-Poppins">
             All Messages
           </h1>
-          {/* All messages list */}
           {conversations &&
             conversations.map((item, index) => (
               <MessageList
@@ -241,8 +228,6 @@ const DashboardMessages = () => {
                 setUserData={setUserData}
                 userData={userData}
                 online={onlineCheck(item)}
-                setActiveStatus={setActiveStatus}
-                isLoading={isLoading}
               />
             ))}
         </>
@@ -260,7 +245,6 @@ const DashboardMessages = () => {
           userData={userData}
           activeStatus={activeStatus}
           scrollRef={scrollRef}
-          setMessages={setMessages}
           handleImageUpload={handleImageUpload}
         />
       )}
@@ -277,11 +261,8 @@ interface MessageListProps {
   me: any,
   setUserData: any,
   online: any,
-  setActiveStatus: any,
-  isLoading: any
 }
-
-const MessageList:React.FC<MessageListProps> = ({
+const MessageList: React.FC<MessageListProps> = ({
   userImage,
   data,
   index,
@@ -290,43 +271,34 @@ const MessageList:React.FC<MessageListProps> = ({
   me,
   setUserData,
   online,
-  setActiveStatus,
-  isLoading
 }) => {
-  console.log(data);
-  const [user, setUser] = useState([]);
-  const navigate = useNavigate();
-  const handleClick = (id: any) => {
-    navigate(`/dashboard-messages?${id}`);
-    setOpen(true);
-  };
-  const [active, setActive] = useState(0);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const userId = data.members.find((user: any) => user != me);
+    const userId = data.members.find((user: any) => user !== me);
 
     const getUser = async () => {
       try {
         const res = await axios.get(`${server}/user/user-info/${userId}`);
         setUser(res.data.user);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching user info:", error);
       }
     };
     getUser();
   }, [me, data]);
 
+  const handleClick = () => {
+    setOpen(true);
+    setCurrentChat(data);
+    setUserData(user);
+  };
+
   return (
     <div
-      className={`w-full flex p-3 px-3 ${active === index ? "bg-[#00000010]" : "bg-transparent"
+      className={`w-full flex p-3 px-3 ${index === 0 ? "bg-[#00000010]" : "bg-transparent"
         }  cursor-pointer`}
-      onClick={(e) =>
-        setActive(index) ||
-        handleClick(data._id) ||
-        setCurrentChat(data) ||
-        setUserData(user) ||
-        setActiveStatus(online)
-      }
+      onClick={handleClick}
     >
       <div className="relative">
         <img
@@ -343,9 +315,7 @@ const MessageList:React.FC<MessageListProps> = ({
       <div className="pl-3">
         <h1 className="text-[18px]">{user?.name}</h1>
         <p className="text-[16px] text-[#000c]">
-          {!isLoading && data?.lastMessageId !== user?._id
-            ? "You:"
-            : user?.name.split(" ")[0] + ": "}{" "}
+          {data?.lastMessageId !== user?._id ? "You:" : `${user?.name}:`}{" "}
           {data?.lastMessage}
         </p>
       </div>
@@ -363,11 +333,10 @@ interface SellerInboxProps {
   sellerId: any,
   userData: any,
   userImage: any,
-  activeStatus: any,
   handleImageUpload: any,
 }
 
-const SellerInbox:React.FC<SellerInboxProps> = ({
+const SellerInbox: React.FC<SellerInboxProps> = ({
   scrollRef,
   setOpen,
   newMessage,
@@ -377,12 +346,10 @@ const SellerInbox:React.FC<SellerInboxProps> = ({
   sellerId,
   userData,
   userImage,
-  activeStatus,
   handleImageUpload,
 }) => {
   return (
     <div className="w-full min-h-full flex flex-col justify-between">
-      {/* message header */}
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
@@ -392,7 +359,7 @@ const SellerInbox:React.FC<SellerInboxProps> = ({
           />
           <div className="pl-3">
             <h1 className="text-[18px] font-[600]">{userData?.name}</h1>
-            <h1>{activeStatus ? "Active Now" : ""}</h1>
+            <h1>{userData ? "Active Now" : ""}</h1>
           </div>
         </div>
         <AiOutlineArrowRight
@@ -402,51 +369,54 @@ const SellerInbox:React.FC<SellerInboxProps> = ({
         />
       </div>
 
-      {/* messages */}
       <div className="px-3 h-[65vh] py-3 overflow-y-scroll">
         {messages &&
-          messages.map((item: any, index: any) => {
-            return (
-              <div
-                className={`flex w-full my-2 ${item.sender === sellerId ? "justify-end" : "justify-start"
-                  }`}
-                ref={scrollRef}
-              >
-                {item.sender !== sellerId && (
-                  <img
-                    src={`${backend_url}${userData?.avatar}`}
-                    className="w-[40px] h-[40px] rounded-full mr-3"
-                    alt="Is"
-                  />
-                )}
-                {item.images && (
-                  <></>
-                  // <img
-                  //   src={`${item.images?.url}`}
-                  //   className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
-                  //   alt="Image"
-                  // />
-                )}
-                {item.text !== "" && (
-                  <div>
-                    <div
-                      className={`w-max p-2 rounded ${item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
-                        } text-[#fff] h-min`}
-                    >
-                      <p>{item.text}</p>
-                    </div>
-
-                    <p className="text-[12px] text-[#000000d3] pt-1">
-                      {/* {format(item.createdAt)} */}
-                    </p>
+          messages.map((item: any, index: any) => (
+            <div
+              className={`flex w-full my-2 ${item.sender === sellerId ? "justify-end" : "justify-start"
+                }`}
+              key={index}
+              ref={scrollRef}
+            >
+              {item.sender !== sellerId && (
+                <img
+                  src={`${backend_url}${userData?.avatar}`}
+                  className="w-[40px] h-[40px] rounded-full mr-3"
+                  alt="Is"
+                />
+              )}
+              {item.images.length >= 1 && item.images && (
+                <img
+                  src={item.images}
+                  className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
+                  alt="Image"
+                />
+              )}
+              {item.text !== "" && (
+                <div>
+                  <div
+                    className={`w-max p-2 rounded ${item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
+                      } text-[#fff] h-min`}
+                  >
+                    <p>{item.text}</p>
                   </div>
-                )}
-              </div>
-            );
-          })}
+                  <p className="text-[12px] text-[#000000d3] pt-1">
+                    {/* {item.createdAt} */}
+                    {new Date(item.createdAt).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
       </div>
 
-      {/* send message input */}
       <form
         aria-required={true}
         className="p-3 relative w-full flex justify-between items-center"

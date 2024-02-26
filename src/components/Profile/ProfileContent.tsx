@@ -49,35 +49,15 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, loadUser, updat
         dispatch(updateUserInformation(name, email, phoneNumber, password))
     }
 
-    // const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
-
-    //     // e.preventDefault();
-    //     const file = e.target?.files[0];
-    //     setAvatar(file);
-
-    //     const formData = new FormData();
-    //     formData.append("image", e.target?.files[0]);
-
-    //     await axios.put(`${server}/user/update-avatar`, formData, {
-    //         headers: {
-    //             "Content-Type": "multipart/form-data",
-    //         },
-    //         withCredentials: true,
-    //     }).then((response) => {
-    //         window.location.reload();
-    //     }).catch((error) => {
-    //         toast.error(error.message);
-    //     })
-    // };
-    const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
         const fileInput = e.target as HTMLInputElement; // Type casting to HTMLInputElement
         const file = fileInput.files?.[0];
         setAvatar(file)
-
         const formData = new FormData()
-
+        const userId = user?._id
         formData.append("image", file)
+        formData.append("id", userId) 
 
         await axios.put(`${server}/user/update-avatar`, formData, {
             headers: {
@@ -86,12 +66,12 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ active, loadUser, updat
             withCredentials: true
         }).then((res) => {
             dispatch(loadUser())
-            toast.success("Avatar updated successfully")
+            toast.success("avatar updated successfully!");
         }).catch((error) => {
             toast.error(error.response.data.message)
         })
     }
-
+ 
     return (
         <div className='w-full'>
             {/* profile */}
