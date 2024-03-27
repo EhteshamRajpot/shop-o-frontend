@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { productData } from '../../../static/data';
 import styles from '../../../styles/styles';
 import ProductCard from "../ProductCard/ProductCard.tsx";
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,14 +10,15 @@ interface BestDealsProps {
 }
 const BestDeals: React.FC<BestDealsProps> = ({ getAllProducts }) => {
     const dispatch = useDispatch()
-    const [data, setData] = useState<typeof productData | undefined>();
     const { allProducts } = useSelector((state: any) => state.products);
+    const [data, setData] = useState<typeof allProducts | undefined>();
 
     useEffect(() => {
-        const d = productData && productData.sort((a, b) => b.total_sell - a.total_sell);
-        const firstFive = d?.slice(0, 5);
-        setData(firstFive);
-    }, []);
+      const allProductsData = allProducts ? [...allProducts] : [];
+      const sortedData = allProductsData?.sort((a,b) => b.sold_out - a.sold_out); 
+      const firstFive = sortedData && sortedData.slice(0, 5);
+      setData(firstFive);
+    }, [allProducts]);
 
     return (
         <div>
@@ -35,8 +35,8 @@ const BestDeals: React.FC<BestDealsProps> = ({ getAllProducts }) => {
                         )
                     } */}
 
-                    {allProducts && allProducts?.length > 0 ? (
-                        allProducts.map((i: any, index: any) => (
+                    {data && data?.length > 0 ? (
+                        data && data.map((i: any, index: any) => (
                             <ProductCard
                                 data={i}
                                 key={index}

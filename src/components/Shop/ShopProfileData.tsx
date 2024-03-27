@@ -5,6 +5,11 @@ import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
 import Ratings from "../Products/Ratings";
 import { backend_url } from "../../server";
+import { toast } from "react-toastify";
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
+import ProductDetailsCard from "../Route/ProductDetailsCard/ProductDetailsCard";
+import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
+import { addTocart } from "../../redux/actions/cart";
 // import Ratings from "../Products/Ratings";
 
 interface ShopProfileDataProps {
@@ -18,7 +23,7 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
     const { events } = useSelector((state: any) => state.events);
     const dispatch = useDispatch();
     const [active, setActive] = useState(1);
-    
+
     const { id } = useParams();
     useEffect(() => {
         dispatch(getAllProductsShop(id));
@@ -76,7 +81,16 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
                 <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
                     {products && products?.length > 0 ? (
                         products.map((i: any, index: any) => (
-                            <ProductCard data={i} key={index} isShop={true} isEvent={true} />
+                            // <ProductCard data={i} key={index} isShop={true} isEvent={true} />
+                            <ShopProductCard
+                                data={i}
+                                key={index}
+                                isShop={true}
+                                isEvent={true}
+                                addTocart={addTocart}
+                                addToWishlist={addToWishlist}
+                                removeFromWishlist={removeFromWishlist}
+                            />
                         ))
                     ) : (
                         <p>No products available.</p>
@@ -89,17 +103,26 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
                     <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
                         {events &&
                             events.map((i: any, index: any) => (
-                                <ProductCard
+                                // <ProductCard
+                                //     data={i}
+                                //     key={index}
+                                //     isShop={true}
+                                //     isEvent={true}
+                                // />
+                                <ProductCardEvent
                                     data={i}
                                     key={index}
                                     isShop={true}
                                     isEvent={true}
+                                    addTocart={addTocart}
+                                    addToWishlist={addToWishlist}
+                                    removeFromWishlist={removeFromWishlist}
                                 />
                             ))}
                     </div>
                     {events && events.length === 0 && (
                         <h5 className="w-full text-center py-5 text-[18px]">
-                            No Events have for this shop!
+                            No Events for this shop!
                         </h5>
                     )}
                 </div>
@@ -127,7 +150,7 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
                         ))}
                     {allReviews && allReviews.length === 0 && (
                         <h5 className="w-full text-center py-5 text-[18px]">
-                            No Reviews have for this shop!
+                            No Reviews for this shop!
                         </h5>
                     )}
                 </div>
@@ -135,5 +158,289 @@ const ShopProfileData: React.FC<ShopProfileDataProps> = ({ isOwner, getAllEvents
         </div>
     );
 };
+
+
+
+
+interface ProductCardProps {
+    data: any,
+    isShop: any,
+    isEvent: any,
+    addTocart: any,
+    addToWishlist: any,
+    removeFromWishlist: any,
+};
+const ShopProductCard: React.FC<ProductCardProps> = ({ data, isShop, isEvent, removeFromWishlist, addToWishlist, addTocart }) => {
+    const { wishlist } = useSelector((state: any) => state.wishlist);
+    const { cart } = useSelector((state: any) => state.cart);
+    const [click, setClick] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (wishlist && wishlist.find((i: any) => i._id === data._id)) {
+            setClick(true);
+        } else {
+            setClick(false);
+        }
+    }, [wishlist]);
+
+    const removeFromWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(removeFromWishlist(data));
+    };
+
+    const addToWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(addToWishlist(data));
+    };
+
+    const addToCartHandler = (id: any) => {
+        const isItemExists = cart && cart.find((i: any) => i._id === id);
+        if (isItemExists) {
+            toast.error("Item already in cart!");
+        } else {
+            if (data.stock < 1) {
+                toast.error("Product stock limited!");
+            } else {
+                const cartData = { ...data, qty: 1 };
+                dispatch(addTocart(cartData));
+                toast.success("Item added to cart successfully!");
+            }
+        }
+    };
+
+    return (
+        <>
+            <div className='w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer'>
+                <div className='flex justify-end'>
+
+                </div>
+                <Link to={`/product/${data?._id}`}>
+                    <img
+                        src={`${backend_url}${data?.images[0]}`}
+                        alt=""
+                        className="w-full h-[170px] object-contain"
+                    />
+                </Link>
+                <Link to={`/shop/preview/${data?.shop?._id}`}>
+                    <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
+                </Link>
+                <Link to={`/product/${data?._id}`}>
+                    <h4 className='pb-3 font-[500]'>
+                        {data?.name?.length > 40 ? data?.name?.slice(0, 40) + "..." : data?.name}
+                    </h4>
+                    <div className='flex'>
+                        <Ratings rating={data?.ratings} />
+                    </div>
+                    <div className='py-2 flex items-center justify-between'>
+                        <div className='flex'>
+                            <h5 className={`${styles.productDiscountPrice}`}>
+                                {data?.price === 0 ? data?.price : data?.discountPrice}$
+                            </h5>
+                            <h4 className={`${styles.price}`}>
+                                {data?.originalPrice ? data?.originalPrice + " $" : null}
+                            </h4>
+                        </div>
+                        <span className='font-[400] text-[17px] text-[#68d]'>
+                            {data?.sold_out} sold
+                        </span>
+                    </div>
+                </Link>
+                {/* side options */}
+                {/* <div>
+                    {click ? (
+                        <AiFillHeart
+                            size={22}
+                            className='cursor-pointer absolute right-2 top-5'
+                            onClick={() => removeFromWishlistHandler(data)}
+                            color={click ? "red" : "#333"}
+                            title="Remove from wishlist"
+                        />
+                    ) : (
+                        <AiOutlineHeart
+                            size={22}
+                            className='cursor-pointer absolute right-2 top-5'
+                            onClick={() => addToWishlistHandler(data)}
+                            color={click ? "red" : "#333"}
+                            title="Add to wishlist"
+                        />
+                    )}
+                    <AiOutlineEye
+                        size={22}
+                        className='cursor-pointer absolute right-2 top-14'
+                        onClick={() => setOpen(!open)}
+                        color="#333"
+                        title="Quick View"
+                    />
+                    <AiOutlineShoppingCart
+                        size={22}
+                        className='cursor-pointer absolute right-2 top-24'
+                        onClick={() => addToCartHandler(data._id)}
+                        color="#333"
+                        title="Add to cart"
+                    />
+                    {
+                        open ? (
+                            <ProductDetailsCard
+                                data={data}
+                                setOpen={setOpen}
+                                addTocart={addTocart}
+                                addToWishlist={addToWishlist}
+                                removeFromWishlist={removeFromWishlist}
+                            />
+                        ) : null
+                    }
+
+                </div> */}
+
+
+                <div>
+                    <AiOutlineEye
+                        size={22}
+                        className='cursor-pointer absolute right-2'
+                        style={{ marginTop: "-95px" }}
+                        onClick={() => setOpen(!open)}
+                        color="#333"
+                        title="Quick View"
+                    />
+                    {
+                        open ? (
+                            <ProductDetailsCard
+                                data={data}
+                                setOpen={setOpen}
+                                addTocart={addTocart}
+                                addToWishlist={addToWishlist}
+                                removeFromWishlist={removeFromWishlist}
+                            />
+                        ) : null
+                    }
+
+                </div>
+            </div>
+        </>
+    )
+}
+
+
+interface ProductCardEventProps {
+    data: any,
+    isShop: any,
+    isEvent: any,
+    addTocart: any,
+    addToWishlist: any,
+    removeFromWishlist: any,
+};
+
+const ProductCardEvent: React.FC<ProductCardEventProps> = ({ data, isShop, isEvent, removeFromWishlist, addToWishlist, addTocart }) => {
+    const { wishlist } = useSelector((state: any) => state.wishlist);
+    const { cart } = useSelector((state: any) => state.cart);
+    const [click, setClick] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (wishlist && wishlist.find((i: any) => i._id === data._id)) {
+            setClick(true);
+        } else {
+            setClick(false);
+        }
+    }, [wishlist]);
+
+    const removeFromWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(removeFromWishlist(data));
+    };
+
+    const addToWishlistHandler = (data: any) => {
+        setClick(!click);
+        dispatch(addToWishlist(data));
+    };
+
+    const addToCartHandler = (id: any) => {
+        const isItemExists = cart && cart.find((i: any) => i._id === id);
+        if (isItemExists) {
+            toast.error("Item already in cart!");
+        } else {
+            if (data.stock < 1) {
+                toast.error("Product stock limited!");
+            } else {
+                const cartData = { ...data, qty: 1 };
+                dispatch(addTocart(cartData));
+                toast.success("Item added to cart successfully!");
+            }
+        }
+    };
+
+
+
+    return (
+        <>
+            <div className='w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer'>
+                <div className='flex justify-end'>
+
+                </div>
+                <Link to={`/product/${data?._id}`}>
+                    <img
+                        src={`${backend_url}${data?.images[0]}`}
+                        alt=""
+                        className="w-full h-[170px] object-contain"
+                    />
+                </Link>
+                <Link to={`/shop/preview/${data?.shop?._id}`}>
+                    <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
+                </Link>
+                <Link to={`/product/${data?._id}`}>
+                    <h4 className='pb-3 font-[500]'>
+                        {data?.name?.length > 40 ? data?.name?.slice(0, 40) + "..." : data?.name}
+                    </h4>
+                    <div className='flex'>
+                        {/* <Ratings rating={data?.ratings} /> */}
+                    </div>
+                    <div className='py-2 flex items-center justify-between'>
+                        <div className='flex'>
+                            <h5 className={`${styles.productDiscountPrice}`}>
+                                {data?.price === 0 ? data?.price : data?.discountPrice}$
+                            </h5>
+                            <h4 className={`${styles.price}`}>
+                                {data?.originalPrice ? data?.originalPrice + " $" : null}
+                            </h4>
+                        </div>
+                        <span className='font-[400] text-[17px] text-[#68d]'>
+                            {data?.sold_out} sold
+                        </span>
+                    </div>
+                </Link>
+                {/* side options */}
+                <div>
+                    <AiOutlineEye
+                        size={22}
+                        className='cursor-pointer absolute right-2 top-14'
+                        style={{ marginTop: "175px" }}
+                        onClick={() => setOpen(!open)}
+                        color="#333"
+                        title="Quick View"
+                    />
+                    {
+                        open ? (
+                            <ProductDetailsCard
+                                data={data}
+                                setOpen={setOpen}
+                                addTocart={addTocart}
+                                addToWishlist={addToWishlist}
+                                removeFromWishlist={removeFromWishlist}
+                            />
+                        ) : null
+                    }
+
+                </div>
+            </div>
+        </>
+    )
+}
+
+
 
 export default ShopProfileData;

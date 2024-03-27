@@ -213,7 +213,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                         >
                             <AiOutlineShoppingCart size={30} />
                             <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
-                                3
+                                {cart && cart.length}
                             </span>
                         </div>
                     </div>
@@ -234,11 +234,11 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                 <div>
                                     <div
                                         className="relative mr-[15px]"
-                                    // onClick={() => setOpenWishlist(true) || setOpen(false)}
+                                        onClick={() => setOpenWishlist(true) || setOpen(false)}
                                     >
                                         <AiOutlineHeart size={30} className="mt-5 ml-3" />
                                         <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
-                                            1
+                                            {wishlist && wishlist.length}
                                         </span>
                                     </div>
                                 </div>
@@ -257,7 +257,7 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                 />
-                                {searchData && (
+                                {/* {searchData && (
                                     <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
                                         {searchData.map((i) => {
                                             const d = i.name;
@@ -277,7 +277,26 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
                                             );
                                         })}
                                     </div>
-                                )}
+                                )} */}
+
+{
+                                        searchData && searchData.length !== 0 ? (
+                                            <div className='absolute min-h-[30hv] bg-slate-50 shadow-sm-2 z-[9] p-4'>
+                                                {
+                                                    searchData && searchData.map((i: any, index: any) => {
+                                                        return (
+                                                            <Link to={`/product/${i?._id}`}>
+                                                                <div className='w-full flex items-start-py-3'>
+                                                                    <img src={`${backend_url}${i?.images[0]}`} alt="" className='w-[40px] h-[40px] mr-[10px]' />
+                                                                    <h1>{i?.name}</h1>
+                                                                </div>
+                                                            </Link>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        ) : null
+                                    }
                             </div>
 
                             <NavBar active={Number(activeHeading)} />

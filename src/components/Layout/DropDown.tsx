@@ -1,6 +1,9 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/styles';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { server } from '../../server';
 
 interface Category {
     id: number,
@@ -16,6 +19,7 @@ interface DropDownProps {
 
 const DropDown: React.FC<DropDownProps> = ({ categoriesData, setDropDown }) => {
     const navigate = useNavigate();
+
     const submitHandle = (i: Category) => {
         navigate(`/products?category=${i.title}`);
         setDropDown(false);

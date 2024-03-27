@@ -9,10 +9,10 @@ interface ProductDetailsCardProps {
     data: any,
     setOpen: any,
     addTocart: any,
-    addToWishlist: any, 
+    addToWishlist: any,
     removeFromWishlist: any
 }
-const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart, addToWishlist, removeFromWishlist}) => {
+const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, addTocart, addToWishlist, removeFromWishlist }) => {
     const { cart } = useSelector((state: any) => state.cart)
     const { wishlist } = useSelector((state: any) => state.wishlist)
 
@@ -88,17 +88,17 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ setOpen, data, 
                                                 {data.shop.name}
                                             </h3>
                                             <h5 className='pb-3 text-[15px]'>
-                                                ({data?.shop.ratings}) Ratings
+                                                (4.3) Ratings
                                             </h5>
                                         </div>
                                     </div>
-                                    <div className={`${styles.button} bg-[#000] mt-4 rounded h-11`}
-                                    // onClick={handleMessageSubmit}
+                                    {/* <div className={`${styles.button} bg-[#000] mt-4 rounded h-11`}
+                                        onClick={handleMessageSubmit}
                                     >
                                         <span className='text-[#fff] flex items-center'>
                                             Send Message <AiOutlineMessage />
                                         </span>
-                                    </div>
+                                    </div> */}
                                     <h5 className='text-[16px] text-[red] mt-5'>
                                         ({data?.sold_out}) Sold out
                                     </h5>

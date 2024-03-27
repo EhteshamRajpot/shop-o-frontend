@@ -206,11 +206,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, getAllProductsSho
                                                     ({averageRating}/5) Ratings
                                                 </h5>
                                             </div>
-                                            <div className={`${styles.button} bg-[#6443d1] mt-4 !rounded !h-11`} onClick={handleMessageSubmit}>
+                                            {/* <div className={`${styles.button} bg-[#6443d1] mt-4 !rounded !h-11`} onClick={handleMessageSubmit}>
                                                 <span className="text-white flex items-center">
                                                     Send Message <AiOutlineMessage className="ml-1" />
                                                 </span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

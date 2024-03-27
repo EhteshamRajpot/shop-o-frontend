@@ -24,10 +24,10 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
     const { id } = useParams();
 
     useEffect(() => {
-        dispatch(getAllOrdersOfUser(user._id));
-    }, [dispatch, user._id]);
+        dispatch(getAllOrdersOfUser(user?._id));
+    }, [dispatch, user?._id]);
 
-    const data = orders && orders.find((item: any) => item._id === id);
+    const data = orders && orders.find((item: any) => item?._id === id);
 
     const reviewHandler = async (e: MouseEventHandler<HTMLDivElement>) => {
         await axios
@@ -44,7 +44,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
             )
             .then((res) => {
                 toast.success(res.data.message);
-                dispatch(getAllOrdersOfUser(user._id));
+                dispatch(getAllOrdersOfUser(user?._id));
                 setComment("");
                 setRating(null);
                 setOpen(false);
@@ -59,7 +59,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
             status: "Processing refund"
         }).then((res) => {
             toast.success(res.data.message);
-            dispatch(getAllOrdersOfUser(user._id));
+            dispatch(getAllOrdersOfUser(user?._id));
         }).catch((error) => {
             toast.error(error.response.data.message);
         })
