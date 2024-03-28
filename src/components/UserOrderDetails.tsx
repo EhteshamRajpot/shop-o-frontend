@@ -49,7 +49,7 @@ const UserOrderDetails: React.FC<UserOrderDetailsProps> = ({ getAllOrdersOfUser 
                 setRating(null);
                 setOpen(false);
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 toast.error(error);
             });
     };

@@ -397,7 +397,7 @@ const ProductCardEvent: React.FC<ProductCardEventProps> = ({ data, isShop, isEve
                         {data?.name?.length > 40 ? data?.name?.slice(0, 40) + "..." : data?.name}
                     </h4>
                     <div className='flex'>
-                        {/* <Ratings rating={data?.ratings} /> */}
+                        <Ratings rating={data?.ratings} />
                     </div>
                     <div className='py-2 flex items-center justify-between'>
                         <div className='flex'>
