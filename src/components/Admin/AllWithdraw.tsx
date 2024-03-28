@@ -73,7 +73,7 @@ const AllWithdraw = () => {
           <BsPencil
             size={20}
             className={`${params.row.status !== "Processing" ? 'hidden' : '' } mr-5 cursor-pointer`}
-            onClick={() => setOpen(true) || setWithdrawData(params.row)}
+            onClick={() => setOpen(true)}
           />
         );
       },
@@ -82,8 +82,8 @@ const AllWithdraw = () => {
 
   const handleSubmit = async () => {
     await axios
-      .put(`${server}/withdraw/update-withdraw-request/${withdrawData.id}`,{
-        sellerId: withdrawData.shopId,
+      .put(`${server}/withdraw/update-withdraw-request/${withdrawData?.id}`,{
+        sellerId: withdrawData?.shopId,
       },{withCredentials: true})
       .then((res) => {
         toast.success("Withdraw request updated successfully!");
@@ -132,7 +132,7 @@ const AllWithdraw = () => {
               onChange={(e) => setWithdrawStatus(e.target.value)}
               className="w-[200px] h-[35px] border rounded"
             >
-              <option value={withdrawStatus}>{withdrawData.status}</option>
+              <option value={withdrawStatus}>{withdrawData?.status}</option>
               <option value={withdrawStatus}>Succeed</option>
             </select>
             <button

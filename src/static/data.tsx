@@ -321,7 +321,7 @@ export const navItems = [
       rating: 5,
       total_sell: 80,
       stock: 10,
-      category:"Mobile & Tablets"
+      category:"Bluetooth Devices"
     },
     {
       id: 1,
@@ -356,7 +356,7 @@ export const navItems = [
     },
     {
       id: 4,
-      category:"Others",
+      category:"Covers",
       name: "New Fashionable Watch for men 2023 with multiple colors",
       description:
         "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
@@ -414,7 +414,7 @@ export const navItems = [
       rating: 5,
       total_sell: 49,
       stock: 10,
-      category:"Shoes"
+      category:"Brushes"
     },
     {
       id: 1,
@@ -524,7 +524,7 @@ export const navItems = [
     },
     {
       id: 2,
-      category:"Mobile and Tablets",
+      category:"Tablets",
       name: "Iphone 14 pro max 256 gb ssd and 8 gb ram silver colour",
       description:
         "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",

@@ -76,7 +76,7 @@ const AllUsers:React.FC<AllUsersProps> = ({getAllUsers}) => {
       renderCell: (params: any) => {
         return (
           <>
-            <Button onClick={() => setUserId(params.id) || setOpen(true)}>
+            <Button onClick={() => setUserId(params.id)}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -128,7 +128,7 @@ const AllUsers:React.FC<AllUsersProps> = ({getAllUsers}) => {
                 </div>
                 <div
                   className={`${styles.button} text-white text-[18px] !h-[42px] ml-4`}
-                  onClick={() =>  setOpen(false) || handleDelete(userId)}
+                  onClick={() =>  setOpen(false)}
                 >
                   confirm
                 </div>
